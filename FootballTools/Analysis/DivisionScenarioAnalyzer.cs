@@ -84,7 +84,7 @@ namespace FootballTools.Analysis
                                 {
                                     totalWins += WinnerCounts[teamName][i];
                                 }
-                                results.Add($"{teamName}: {WinnerCounts[teamName][0]/TotalCalculations * 100:0.00}% outright winner, member of {WinnerCounts[teamName][WinnerCounts[teamName].Count - 1] / (double)TieOutcomes * 100:0.00}% of tie scenarios");
+                                results.Add($"{teamName}: {totalWins/TotalCalculations * 100:0.00}% outright winner, member of {WinnerCounts[teamName][WinnerCounts[teamName].Count - 1] / (double)TieOutcomes * 100:0.00}% of tie scenarios");
                             }
 
                         }

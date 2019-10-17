@@ -73,12 +73,12 @@ namespace FootballTools
 
         private void LoadData(bool forceDownload)
         {
-            reportTextbox.Text = "Loading data";
+            UpdateStatus("Loading data", 0);
 
             List<Game> games = CfbDownloader.Retrieve(int.Parse(yearTextbox.Text), forceDownload);
             mLeague = new League(games, DivisionsFilename);
 
-            reportTextbox.Text = "Finished loading";
+            UpdateStatus("Finished loading", 0);
 
             //Populating the selector will trigger a UI update
             PopulateConferenceSelector();
