@@ -7,6 +7,11 @@ using System.Runtime.Serialization.Json;
 
 namespace FootballTools.CFBData
 {
+    /// <summary>
+    /// Handles downloading and caching for data from the collegefootballdata API
+    /// API documentation is here:
+    /// https://api.collegefootballdata.com/api/docs/?url=/api-docs.json
+    /// </summary>
     public class CfbDownloader
     {
         private static readonly string CacheDirectory = "Cache";

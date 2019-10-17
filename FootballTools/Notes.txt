@@ -24,3 +24,70 @@ Usage:
 			Nothing shown here yet, place holder for specific data display (i.e. league summary, team summary)
 	
 
+Division tiebreakers:
+	Every conference is different...
+	Got the rules from here:
+		https://www.sbnation.com/college-football/2015/5/8/8561899/tiebreaker-standings-college-conference-rule#targetText=If%20there%20is%20a%20tie,ACC
+	2-way ties are always determined via head-to-head winner
+	ACC:
+		1) Combined head-to-head winning percentage among the tied teams.
+		2) Winning percentage of the tied teams within the division.
+		3) Head-to-head competition versus the team within the division with the best overall (divisional and non-divisional) conference winning percentage, and proceeding through the division.
+			Multiple ties within the division will be broken first to last, using the league's tie-breaking procedures.
+		4) Combined winning percentage versus all common non-divisional opponents.
+		5) Combined winning percentage versus all non-divisional opponents.
+		6) Winning percentage versus common non-divisional opponents based upon their order of finish (overall conference winning percentage) and proceeding through other common non-divisional opponents based upon their divisional order of finish. The tied team with the highest ranking in the full (College Football Playoff) standings following the conclusion of regular season games, unless the second of the tied teams is ranked within five-or-fewer places of the highest ranked tied team. In this case, the two-team tiebreaking procedure shall be applied between the top two ranked tied teams. If all tied teams are not ranked in the full (College Football Playoff) Standings, the computer ranking portion of the Standings will be used, eliminating the high and the low computer ranking, and averaging the remaining rankings. (This portion of the publicly available rule is outdated, as the College Football Playoff no longer uses BCS computers.)
+		7) The representative shall be chosen by a draw as administered by the Commissioner or Commissioner's designee.
+	Big 12:
+		1) The conference records of the three or more teams will be compared against each other.
+		2) The conference records of the three or more teams will be compared against the next highest placed team(s) in the conference.
+		3) The team with the worst scoring differential among the tied teams is out of the running.
+		4) If the tie cannot be broken by steps 1-3, they draw numbers.
+	Big 10:
+		1) The records of the three tied teams will be compared against each other.
+		2) The records of the three tied teams will be compared within their division.
+		3) The records of the three teams will be compared against the next highest placed teams in their division in order of finish (4, 5 and 6).
+		4) The records of the three teams will be compared against all common conference opponents.
+		5) The highest-ranked team in the first College Football Playoff poll following the completion of Big Ten regular season conference play shall be the representative in the Big Ten Championship Game, unless the two highest ranked tied teams are ranked within one spot of each other in the College Football Playoff poll. In this case, the head-to-head results of the top two ranked tied teams shall determine the representative in the Big Ten Championship Game.
+		6) The team with the best overall winning percentage (excluding exempted games) shall be the representative.
+		7) The representative will be chosen by random draw.
+	Pac 12:
+		1) Head-to-head results (best record in games between tied teams).
+		2) Record in inter-divisional games.
+		3) Record against the next highest placed team in the division (based on the record in all conference games), proceeding through the division.
+		4) Record in common conference games.
+		5) Highest ranking in College Football Playoff poll entering the final weekend of the regular season.
+	SEC:
+		1) Combined head-to-head record among the tied teams.
+		2) Record of the tied teams within the division.
+		3) Head-to-head competition against the team within the division with the best overall Conference record (divisional and non divisional) and proceeding through the division (multiple ties within the division will be broken from first to last and a tie for first place will be broken before a tie for fourth place).
+		4) Overall conference record against non divisional teams.
+		5) Combined record against all common non divisional teams.
+		6) Record against the common non divisional team with the best overall conference record (divisional and non divisional) and proceeding through other common non divisional teams based on their order of finish within their division; and
+		7) Best cumulative Conference winning percentage of non-divisional opponents (Note: If two teams' non-divisional opponents have the same cumulative record, then the two-team tiebreaker procedures apply. If four teams are tied and three teams' non-divisional opponents have the same cumulative record, the three-team tiebreaker procedures will be used beginning with 2.A.)
+		8) Coin flip of the tied teams with the team with the odd result being the representative (Example: If there are two teams with tails and one team with heads, the team with heads is the representative).
+	C-USA:
+		1) Highest regular season winning percentage based on overall Conference USA play.
+		2) If tied, head-to-head between tied teams.
+		3) If still tied, highest winning percentage within division.
+		4) If still tied, compare records against divisional opponents in descending order of finish.
+		5) If still tied, compare records with common cross-divisional opponents.
+		6) If still tied, compare records against cross-divisional opponents in descending order of finish.
+		7) If still tied, team with highest (College Football Playoff) ranking.
+		8) If still tied, the representative will be the team that has not participated in the championship game most recently.
+	MAC:
+		1) Head-to-head record among tied teams
+		2) Record of tied teams within the division (versus rank order, highest to lowest, of division teams)
+		3) Comparison of conference winning percentage of cross-over opponents of tied teams
+	Mountain West:
+		1) Winning percentage in games played among the tied teams.
+		2) Winning percentage in games played against division opponents.
+		3) Winning percentage against the next highest‐placed team in the division (based upon the team's record in all games played in the conference), proceeding through the division.
+		4) Winning percentage against common conference opponents.
+		5) Highest CFP ranking (or the composite of selected computer rankings if neither team is ranked in the CFP rankings) following the final week of conference regular‐season games
+	Sun Belt:
+		1) Composite records of each team in competition vs. the other teams involved in the three-way tie.
+		2) Records of each team vs. the first-place team, or their composite records against any teams tying for first place.
+		3) Records of each team vs. the second-place team, or their composite records against any teams tying for second place.
+		4) This process continues with records vs. the third-place team, fourth-place team, etc., as necessary, until the tie is broken and seeding is complete.
+		5) If a tie still exists, the Conference office shall conduct a coin toss.
