@@ -1,0 +1,26 @@
+﻿
+Program description:
+	Downloads and caches data from an external API
+	Shows reports related to selected season and optional conference/division/team
+	Performs division analysis to calculate percentage chances of each team winning division
+
+Usage:
+	Run the program
+	Data will be loaded automatically from cache (if exists) or downloaded and cached
+		Press the Update button to force fresh download of data for the selected Year
+		Data will also load from cache or download when a new Year is selected
+		Cache does not automatically expire, cache will only refresh when user presses Update
+	Select a conference/division/team to see specific data
+	Tabs:
+		Text:
+			Shows reports based on user selection of conference/division/team
+			With a division selected, press the Analysis button
+				Calculations may take a while depending on how much of the season remains, watch the status bar for updates
+				When finished, Text tab will contain info about chances of teams winning the division (at top of report)
+		Matrix:
+			Shows head-to-head matrix based on user selection of conference/division/team
+		League/Conference/Division/Team:
+			One of these tabs shown at a time, depending on user selection of conference/division/team
+			Nothing shown here yet, place holder for specific data display (i.e. league summary, team summary)
+	
+

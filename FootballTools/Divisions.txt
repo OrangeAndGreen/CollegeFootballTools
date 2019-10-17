@@ -1,0 +1,130 @@
+﻿ACC,Miami,Coastal
+ACC,Clemson,Atlantic
+ACC,Georgia Tech,Coastal
+ACC,Wake Forest,Atlantic
+ACC,NC State,Atlantic
+ACC,Florida State,Atlantic
+ACC,Duke,Coastal
+ACC,North Carolina,Coastal
+ACC,Boston College,Atlantic
+ACC,Virginia Tech,Coastal
+ACC,Syracuse,Atlantic
+ACC,Pittsburgh,Coastal
+ACC,Virginia,Coastal
+ACC,Louisville,Atlantic
+SEC,Florida,East
+SEC,Texas A&M,West
+SEC,Ole Miss,West
+SEC,Kentucky,East
+SEC,Mississippi State,West
+SEC,Tennessee,East
+SEC,Alabama,West
+SEC,South Carolina,East
+SEC,Arkansas,West
+SEC,Vanderbilt,East
+SEC,Georgia,East
+SEC,Missouri,East
+SEC,LSU,West
+SEC,Auburn,West
+Mountain West,Hawai'i,West
+Mountain West,San José State,West
+Mountain West,Utah State,Mountain
+Mountain West,Nevada,West
+Mountain West,Colorado State,Mountain
+Mountain West,Boise State,Mountain
+Mountain West,Air Force,Mountain
+Mountain West,New Mexico,Mountain
+Mountain West,Wyoming,Mountain
+Mountain West,San Diego State,West
+Mountain West,UNLV,West
+Mountain West,Fresno State,West
+Pac-12,Arizona,South
+Pac-12,UCLA,South
+Pac-12,Arizona State,South
+Pac-12,Utah,South
+Pac-12,Colorado,South
+Pac-12,Oregon State,North
+Pac-12,Washington,North
+Pac-12,Stanford,North
+Pac-12,California,North
+Pac-12,Oregon,North
+Pac-12,Washington State,North
+Pac-12,USC,South
+American Athletic,Cincinnati,East
+American Athletic,Connecticut,East
+American Athletic,UCF,East
+American Athletic,Tulane,West
+American Athletic,Tulsa,West
+American Athletic,South Florida,East
+American Athletic,Memphis,West
+American Athletic,East Carolina,East
+American Athletic,Temple,East
+American Athletic,Navy,West
+American Athletic,SMU,West
+American Athletic,Houston,West
+Mid-American,Bowling Green,East
+Mid-American,Buffalo,East
+Mid-American,Central Michigan,West
+Mid-American,Kent State,East
+Mid-American,Toledo,West
+Mid-American,Ball State,West
+Mid-American,Akron,East
+Mid-American,Ohio,East
+Mid-American,Eastern Michigan,West
+Mid-American,Western Michigan,West
+Mid-American,Northern Illinois,West
+Mid-American,Miami (OH),East
+Conference USA,Charlotte,East
+Conference USA,Western Kentucky,East
+Conference USA,Florida International,East
+Conference USA,UAB,West
+Conference USA,Rice,West
+Conference USA,Florida Atlantic,East
+Conference USA,UT San Antonio,West
+Conference USA,Marshall,East
+Conference USA,Southern Mississippi,West
+Conference USA,Old Dominion,East
+Conference USA,North Texas,West
+Conference USA,Middle Tennessee,East
+Conference USA,UTEP,West
+Conference USA,Louisiana Tech,West
+Sun Belt,Texas State,West
+Sun Belt,South Alabama,West
+Sun Belt,Louisiana,West
+Sun Belt,Georgia State,East
+Sun Belt,Appalachian State,East
+Sun Belt,Coastal Carolina,East
+Sun Belt,Troy,East
+Sun Belt,Arkansas State,West
+Sun Belt,Georgia Southern,East
+Sun Belt,Louisiana Monroe,West
+Big Ten,Minnesota,West
+Big Ten,Michigan State,East
+Big Ten,Rutgers,East
+Big Ten,Wisconsin,West
+Big Ten,Purdue,West
+Big Ten,Maryland,East
+Big Ten,Nebraska,West
+Big Ten,Indiana,East
+Big Ten,Ohio State,East
+Big Ten,Illinois,West
+Big Ten,Penn State,East
+Big Ten,Northwestern,West
+Big Ten,Iowa,West
+Big Ten,Michigan,East
+FBS Independents,BYU,none
+FBS Independents,Army,none
+FBS Independents,UMass,none
+FBS Independents,Liberty,none
+FBS Independents,New Mexico State,none
+FBS Independents,Notre Dame,none
+Big 12,Oklahoma State,none
+Big 12,Iowa State,none
+Big 12,Kansas,none
+Big 12,West Virginia,none
+Big 12,Texas Tech,none
+Big 12,Baylor,none
+Big 12,Kansas State,none
+Big 12,TCU,none
+Big 12,Texas,none
+Big 12,Oklahoma,none
