@@ -8,6 +8,6 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 {
     public interface ITiebreaker
     {
-        string BreakTie(List<string> teamNames, Division division);
+        string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division);
     }
 }

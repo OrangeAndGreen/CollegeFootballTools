@@ -18,7 +18,7 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  7) The representative will be chosen by random draw.
          */
 
-        public string BreakTie(List<string> teamNames, Division division)
+        public string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division)
         {
             return null;
         }

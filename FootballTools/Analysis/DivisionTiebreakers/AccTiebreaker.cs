@@ -19,31 +19,48 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  7) The representative shall be chosen by a draw as administered by the Commissioner or Commissioner's designee.
          */
 
-        public string BreakTie(List<string> teamNames, Division division)
+        public string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division)
         {
-            List<Game> games = Game.FilterGamesByTeams(division.AllGames, teamNames);
-
             //1) See if any team wins the combined head-to-head matchups
             int[] headToHeadWins = new int[teamNames.Count];
-            foreach(Game game in games)
+            for(int gameIndex = 0; gameIndex < games.Count; gameIndex++)
             {
+                Game game = games[gameIndex];
                 bool gameProcessed = false;
                 for (int index1= 0; index1 < teamNames.Count && !gameProcessed; index1++)
                 {
                     string team1 = teamNames[index1];
-                    if (game.GameAlreadyPlayed && game.InvolvesTeam(team1))
+                    if (!game.InvolvesTeam(team1))
                     {
-                        for (int index2 = 0; index2 < teamNames.Count; index2++)
+                        continue;
+                    }
+
+                    for (int index2 = index1 + 1; index2 < teamNames.Count; index2++)
+                    {
+                        string team2 = teamNames[index2];
+                        if (!game.InvolvesTeam(team2))
                         {
-                            string team2 = teamNames[index2];
-                            if (game.InvolvesTeam(team2))
-                            {
-                                int winnerIndex = game.Winner.Equals(team1) ? index1 : index2;
-                                headToHeadWins[winnerIndex]++;
-                                gameProcessed = true;
-                                break;
-                            }
+                            continue;
                         }
+
+                        string winner = null;
+                        if (winners.Count > gameIndex)
+                        {
+                            winner = winners[gameIndex];
+                        }
+                        else if (game.GameAlreadyPlayed)
+                        {
+                            winner = game.Winner;
+                        }
+
+                        if (winner != null)
+                        {
+                            int winnerIndex = winners[gameIndex].Equals(team1) ? index1 : index2;
+                            headToHeadWins[winnerIndex]++;
+                        }
+                        
+                        gameProcessed = true;
+                        break;
                     }
                 }
             }
@@ -55,7 +72,13 @@ namespace FootballTools.Analysis.DivisionTiebreakers
                 int headToHead = headToHeadWins[i];
                 if (headToHead > maxWins)
                 {
-                    tiedTeams = new List<string> { teamNames[i] };
+                    maxWins = headToHead;
+                    tiedTeams.Clear();
+                    tiedTeams.Add(teamNames[i]);
+                }
+                else if (headToHead == maxWins)
+                {
+                    tiedTeams.Add(teamNames[i]);
                 }
             }
 
@@ -75,8 +98,9 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 
             List<Game> divisionGames = Game.FilterGamesByTeams(division.AllGames, divisionTeamNames);
             int[] divisionWins = new int[divisionTeamNames.Count];
-            foreach (Game game in divisionGames)
+            for(int gameIndex = 0; gameIndex < divisionGames.Count; gameIndex++)
             {
+                Game game = divisionGames[gameIndex];
                 bool gameProcessed = false;
                 for (int index1 = 0; index1 < divisionTeamNames.Count && !gameProcessed; index1++)
                 {
@@ -88,8 +112,22 @@ namespace FootballTools.Analysis.DivisionTiebreakers
                             string team2 = divisionTeamNames[index2];
                             if (game.InvolvesTeam(team2))
                             {
-                                int winnerIndex = game.Winner.Equals(team1) ? index1 : index2;
-                                divisionWins[winnerIndex]++;
+                                string winner = null;
+                                if (winners.Count > gameIndex)
+                                {
+                                    winner = winners[gameIndex];
+                                }
+                                else if (game.GameAlreadyPlayed)
+                                {
+                                    winner = game.Winner;
+                                }
+
+                                if (winner != null)
+                                {
+                                    int winnerIndex = winner.Equals(team1) ? index1 : index2;
+                                    divisionWins[winnerIndex]++;
+                                }
+
                                 gameProcessed = true;
                                 break;
                             }
@@ -105,7 +143,13 @@ namespace FootballTools.Analysis.DivisionTiebreakers
                 int divisionWin = divisionWins[i];
                 if (divisionWin > maxWins)
                 {
-                    tiedTeams = new List<string> { divisionTeamNames[i] };
+                    maxWins = divisionWin;
+                    tiedTeams.Clear();
+                    tiedTeams.Add(divisionTeamNames[i]);
+                }
+                else if (divisionWin == maxWins)
+                {
+                    tiedTeams.Add(divisionTeamNames[i]);
                 }
             }
 

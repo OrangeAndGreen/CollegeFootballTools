@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.conferenceSelector = new System.Windows.Forms.ComboBox();
             this.conferenceLabel = new System.Windows.Forms.Label();
             this.reportTextbox = new System.Windows.Forms.TextBox();
@@ -39,21 +41,21 @@
             this.analyzeButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.textTab = new System.Windows.Forms.TabPage();
+            this.matrixTab = new System.Windows.Forms.TabPage();
+            this.matrixGrid = new System.Windows.Forms.DataGridView();
             this.leagueTab = new System.Windows.Forms.TabPage();
             this.conferenceTab = new System.Windows.Forms.TabPage();
             this.divisionTab = new System.Windows.Forms.TabPage();
-            this.matrixGrid = new System.Windows.Forms.DataGridView();
             this.teamTab = new System.Windows.Forms.TabPage();
             this.teamLabel = new System.Windows.Forms.Label();
             this.teamSelector = new System.Windows.Forms.ComboBox();
-            this.matrixTab = new System.Windows.Forms.TabPage();
             this.statusBar = new System.Windows.Forms.StatusStrip();
-            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.tabControl1.SuspendLayout();
             this.textTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.matrixGrid)).BeginInit();
             this.matrixTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.matrixGrid)).BeginInit();
             this.statusBar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,7 +87,7 @@
             this.reportTextbox.Multiline = true;
             this.reportTextbox.Name = "reportTextbox";
             this.reportTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.reportTextbox.Size = new System.Drawing.Size(968, 416);
+            this.reportTextbox.Size = new System.Drawing.Size(859, 267);
             this.reportTextbox.TabIndex = 2;
             // 
             // yearTextbox
@@ -128,7 +130,7 @@
             // downloadButton
             // 
             this.downloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.downloadButton.Location = new System.Drawing.Point(901, 28);
+            this.downloadButton.Location = new System.Drawing.Point(792, 27);
             this.downloadButton.Name = "downloadButton";
             this.downloadButton.Size = new System.Drawing.Size(75, 23);
             this.downloadButton.TabIndex = 7;
@@ -139,7 +141,7 @@
             // analyzeButton
             // 
             this.analyzeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.analyzeButton.Location = new System.Drawing.Point(820, 29);
+            this.analyzeButton.Location = new System.Drawing.Point(711, 28);
             this.analyzeButton.Name = "analyzeButton";
             this.analyzeButton.Size = new System.Drawing.Size(75, 23);
             this.analyzeButton.TabIndex = 8;
@@ -161,7 +163,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 56);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(991, 305);
+            this.tabControl1.Size = new System.Drawing.Size(882, 305);
             this.tabControl1.TabIndex = 9;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -171,17 +173,65 @@
             this.textTab.Location = new System.Drawing.Point(4, 22);
             this.textTab.Name = "textTab";
             this.textTab.Padding = new System.Windows.Forms.Padding(3);
-            this.textTab.Size = new System.Drawing.Size(983, 425);
+            this.textTab.Size = new System.Drawing.Size(874, 279);
             this.textTab.TabIndex = 1;
             this.textTab.Text = "Text";
             this.textTab.UseVisualStyleBackColor = true;
+            // 
+            // matrixTab
+            // 
+            this.matrixTab.Controls.Add(this.matrixGrid);
+            this.matrixTab.Location = new System.Drawing.Point(4, 22);
+            this.matrixTab.Name = "matrixTab";
+            this.matrixTab.Size = new System.Drawing.Size(874, 279);
+            this.matrixTab.TabIndex = 5;
+            this.matrixTab.Text = "Matrix";
+            this.matrixTab.UseVisualStyleBackColor = true;
+            // 
+            // matrixGrid
+            // 
+            this.matrixGrid.AllowUserToAddRows = false;
+            this.matrixGrid.AllowUserToDeleteRows = false;
+            this.matrixGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.matrixGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.matrixGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.matrixGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.matrixGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.matrixGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.matrixGrid.Location = new System.Drawing.Point(3, 3);
+            this.matrixGrid.Name = "matrixGrid";
+            this.matrixGrid.ReadOnly = true;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.matrixGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.matrixGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
+            this.matrixGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.matrixGrid.ShowCellErrors = false;
+            this.matrixGrid.ShowEditingIcon = false;
+            this.matrixGrid.ShowRowErrors = false;
+            this.matrixGrid.Size = new System.Drawing.Size(868, 273);
+            this.matrixGrid.TabIndex = 0;
             // 
             // leagueTab
             // 
             this.leagueTab.Location = new System.Drawing.Point(4, 22);
             this.leagueTab.Name = "leagueTab";
             this.leagueTab.Padding = new System.Windows.Forms.Padding(3);
-            this.leagueTab.Size = new System.Drawing.Size(983, 425);
+            this.leagueTab.Size = new System.Drawing.Size(874, 279);
             this.leagueTab.TabIndex = 0;
             this.leagueTab.Text = "League";
             this.leagueTab.UseVisualStyleBackColor = true;
@@ -190,7 +240,7 @@
             // 
             this.conferenceTab.Location = new System.Drawing.Point(4, 22);
             this.conferenceTab.Name = "conferenceTab";
-            this.conferenceTab.Size = new System.Drawing.Size(983, 425);
+            this.conferenceTab.Size = new System.Drawing.Size(874, 279);
             this.conferenceTab.TabIndex = 2;
             this.conferenceTab.Text = "Conference";
             this.conferenceTab.UseVisualStyleBackColor = true;
@@ -199,35 +249,16 @@
             // 
             this.divisionTab.Location = new System.Drawing.Point(4, 22);
             this.divisionTab.Name = "divisionTab";
-            this.divisionTab.Size = new System.Drawing.Size(983, 425);
+            this.divisionTab.Size = new System.Drawing.Size(874, 279);
             this.divisionTab.TabIndex = 3;
             this.divisionTab.Text = "Division";
             this.divisionTab.UseVisualStyleBackColor = true;
-            // 
-            // matrixGrid
-            // 
-            this.matrixGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.matrixGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.matrixGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.matrixGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.matrixGrid.ColumnHeadersVisible = false;
-            this.matrixGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.matrixGrid.Location = new System.Drawing.Point(3, 3);
-            this.matrixGrid.Name = "matrixGrid";
-            this.matrixGrid.RowHeadersVisible = false;
-            this.matrixGrid.ShowCellErrors = false;
-            this.matrixGrid.ShowEditingIcon = false;
-            this.matrixGrid.ShowRowErrors = false;
-            this.matrixGrid.Size = new System.Drawing.Size(977, 273);
-            this.matrixGrid.TabIndex = 0;
             // 
             // teamTab
             // 
             this.teamTab.Location = new System.Drawing.Point(4, 22);
             this.teamTab.Name = "teamTab";
-            this.teamTab.Size = new System.Drawing.Size(983, 425);
+            this.teamTab.Size = new System.Drawing.Size(874, 279);
             this.teamTab.TabIndex = 4;
             this.teamTab.Text = "Team";
             this.teamTab.UseVisualStyleBackColor = true;
@@ -251,16 +282,6 @@
             this.teamSelector.TabIndex = 10;
             this.teamSelector.SelectedIndexChanged += new System.EventHandler(this.teamSelector_SelectedIndexChanged);
             // 
-            // matrixTab
-            // 
-            this.matrixTab.Controls.Add(this.matrixGrid);
-            this.matrixTab.Location = new System.Drawing.Point(4, 22);
-            this.matrixTab.Name = "matrixTab";
-            this.matrixTab.Size = new System.Drawing.Size(983, 279);
-            this.matrixTab.TabIndex = 5;
-            this.matrixTab.Text = "Matrix";
-            this.matrixTab.UseVisualStyleBackColor = true;
-            // 
             // statusBar
             // 
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -268,9 +289,16 @@
             this.progressBar});
             this.statusBar.Location = new System.Drawing.Point(0, 360);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(988, 22);
+            this.statusBar.Size = new System.Drawing.Size(879, 22);
             this.statusBar.TabIndex = 12;
             this.statusBar.Text = "statusStrip1";
+            // 
+            // statusText
+            // 
+            this.statusText.Name = "statusText";
+            this.statusText.Size = new System.Drawing.Size(762, 17);
+            this.statusText.Spring = true;
+            this.statusText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // progressBar
             // 
@@ -278,18 +306,11 @@
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(100, 16);
             // 
-            // statusText
-            // 
-            this.statusText.Name = "statusText";
-            this.statusText.Size = new System.Drawing.Size(840, 17);
-            this.statusText.Spring = true;
-            this.statusText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(988, 382);
+            this.ClientSize = new System.Drawing.Size(879, 382);
             this.Controls.Add(this.statusBar);
             this.Controls.Add(this.teamLabel);
             this.Controls.Add(this.teamSelector);
@@ -309,8 +330,8 @@
             this.tabControl1.ResumeLayout(false);
             this.textTab.ResumeLayout(false);
             this.textTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.matrixGrid)).EndInit();
             this.matrixTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.matrixGrid)).EndInit();
             this.statusBar.ResumeLayout(false);
             this.statusBar.PerformLayout();
             this.ResumeLayout(false);

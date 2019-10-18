@@ -16,7 +16,7 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  5) If a tie still exists, the Conference office shall conduct a coin toss.
          */
 
-        public string BreakTie(List<string> teamNames, Division division)
+        public string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division)
         {
             return null;
         }

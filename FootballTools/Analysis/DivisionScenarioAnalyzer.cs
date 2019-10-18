@@ -1,6 +1,7 @@
 ﻿using FootballTools.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace FootballTools.Analysis
 {
@@ -61,13 +62,41 @@ namespace FootballTools.Analysis
 
             TotalCalculations = Math.Pow(2, games.Count - completedGames);
 
+            mJudge.SetData(league, division, games, (winner, tiedTeams) =>
+            {
+                JudgementsDone++;
+                lock (WinnerCounts)
+                {
+                    if (winner != null)
+                    {
+                        WinnerCounts[winner][tiedTeams.Count - 1]++;
+                    }
+                    else
+                    {
+                        TieOutcomes++;
+                        foreach (string teamName in tiedTeams)
+                        {
+                            WinnerCounts[teamName][WinnerCounts[teamName].Count - 1]++;
+                        }
+                    }
+
+                    //Log the current counts once in a while
+                    LastUpdateCounter++;
+                    if (LastUpdateCounter > 1000)
+                    {
+                        progressCallback($"Judging {JudgementsDone} of {TotalCalculations} outcomes", JudgementsDone / TotalCalculations);
+                        LastUpdateCounter = 0;
+                    }
+                }
+            });
+
             //Explore every permutation of game scenarios
             GamePermutator permutator = new GamePermutator();
-            permutator.PermutateGames(games, (allGames, homeWinners) =>
+            permutator.PermutateGames(games, (allGames, winners) =>
             {
                 CalculationsDone++;
                 //Check for final callback (signalled by homeWinners == null)
-                if (homeWinners == null)
+                if (winners == null)
                 {
                     //Wait for the judge to catch up
                     mJudge.Signal((a,b) =>
@@ -95,34 +124,13 @@ namespace FootballTools.Analysis
                     return;
                 }
 
-                //Determine who won the permutation (async)
-                mJudge.Judge(division, allGames, homeWinners, (winner, tiedTeams) =>
+                while (mJudge.Backlog > 1000000)
                 {
-                    JudgementsDone++;
-                    lock (WinnerCounts)
-                    {
-                        if (winner != null)
-                        {
-                            WinnerCounts[winner][tiedTeams.Count - 1]++;
-                        }
-                        else
-                        {
-                            TieOutcomes++;
-                            foreach(string teamName in tiedTeams)
-                            {
-                                WinnerCounts[teamName][WinnerCounts[teamName].Count - 1]++;
-                            }
-                        }
+                    Thread.Sleep(TimeSpan.FromMilliseconds(100));
+                }
 
-                        //Log the current counts once in a while
-                        LastUpdateCounter++;
-                        if (LastUpdateCounter > 1000)
-                        {
-                            progressCallback($"Judging {JudgementsDone} of {TotalCalculations} outcomes", JudgementsDone / TotalCalculations);
-                            LastUpdateCounter = 0;
-                        }
-                    }
-                });
+                //Determine who won the permutation (async)
+                mJudge.Judge(winners);
             });
         }
     }

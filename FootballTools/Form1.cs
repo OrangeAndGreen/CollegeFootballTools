@@ -25,6 +25,12 @@ namespace FootballTools
      * TODOs:
      *      -Show Division Rankings with each team's overall/conference win/loss, points forced/allowed
      *      -Show remaining conference games
+     *      -Matrix improvements
+     *      -Idea: Analyze earlier weeks in the background and cache results
+     *              Idea is to eventually have division scenarios for every season/week/division so we can graph them
+     *              Only cache completed weeks
+     *              Be ready to save progress if program quits while analysis is under way
+     *              Then restore the saved progress and continue the analysis later
      *      
      */
     public partial class Form1 : Form

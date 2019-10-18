@@ -6,6 +6,7 @@ namespace FootballTools.Entities
     [DebuggerDisplay("Team: {Name}")]
     public class Team
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string DivisionName { get; set; }
         public string ConferenceName { get; set; }
@@ -22,8 +23,9 @@ namespace FootballTools.Entities
 
         public List<Game> Schedule { get; set; }
 
-        public Team(string name, string divisionName, string conferenceName)
+        public Team(int id, string name, string divisionName, string conferenceName)
         {
+            Id = id;
             Name = name;
             DivisionName = divisionName;
             ConferenceName = conferenceName;

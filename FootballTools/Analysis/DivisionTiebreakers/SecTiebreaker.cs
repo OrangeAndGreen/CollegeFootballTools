@@ -19,7 +19,7 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  8) Coin flip of the tied teams with the team with the odd result being the representative (Example: If there are two teams with tails and one team with heads, the team with heads is the representative).
          */
 
-        public string BreakTie(List<string> teamNames, Division division)
+        public string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division)
         {
             return null;
         }

@@ -6,12 +6,14 @@ namespace FootballTools.Entities
     [DebuggerDisplay("Division: {Name}")]
     public class Division
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string ConferenceName { get; set; }
         public List<Team> Teams { get; set; }
 
-        public Division(string name, string conferenceName)
+        public Division(int id, string name, string conferenceName)
         {
+            Id = id;
             Name = name;
             ConferenceName = conferenceName;
             Teams = new List<Team>();

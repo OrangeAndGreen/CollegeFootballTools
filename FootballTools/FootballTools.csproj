@@ -57,7 +57,6 @@
     <Compile Include="Analysis\DivisionTiebreakers\Pac12Tiebreaker.cs" />
     <Compile Include="Analysis\DivisionTiebreakers\SecTiebreaker.cs" />
     <Compile Include="Analysis\DivisionTiebreakers\SunBeltTiebreaker.cs" />
-    <Compile Include="Analysis\DivisionTiebreakers\TiebreakerFactory.cs" />
     <Compile Include="Analysis\DivisionWinnerCalculator.cs" />
     <Compile Include="Analysis\DivisionWinnerCalculatorCommand.cs" />
     <Compile Include="Analysis\GamePermutator.cs" />

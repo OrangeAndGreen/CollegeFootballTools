@@ -134,18 +134,16 @@ namespace FootballTools.Reports
             List<Team> sortedTeams = new List<Team>(teams);
             Team.SortTeamList(sortedTeams, sortByTotalOrConferenceWins);
 
-            string[,] labels = new string[sortedTeams.Count + 1, sortedTeams.Count + 1];
-            Color[,] colors = new Color[sortedTeams.Count + 1, sortedTeams.Count + 1];
+            string[] headers = new string[sortedTeams.Count];
+            string[,] labels = new string[sortedTeams.Count, sortedTeams.Count];
+            Color[,] colors = new Color[sortedTeams.Count, sortedTeams.Count];
 
             for (int teamIndex = 0; teamIndex < sortedTeams.Count; teamIndex++)
             {
                 Team team = sortedTeams[teamIndex];
 
                 string teamLabel = $"{team.Name}{Constants.Newline}{team.ComboRecord}";
-                labels[0, teamIndex + 1] = teamLabel;
-                colors[0, teamIndex + 1] = Constants.LossColor;
-                labels[teamIndex + 1, 0] = teamLabel;
-                colors[teamIndex + 1, 0] = Constants.WinColor;
+                headers[teamIndex] = teamLabel;
 
                 for (int rivalIndex = 0; rivalIndex < sortedTeams.Count; rivalIndex++)
                 {
@@ -158,7 +156,7 @@ namespace FootballTools.Reports
                             if ((game.home_team.Equals(team.Name) && game.away_team.Equals(rival.Name)) ||
                                 (game.home_team.Equals(rival.Name) && game.away_team.Equals(team.Name)))
                             {
-                                string entry = game.GameDate.ToString("MMMM dd");
+                                string entry = game.GameDate.ToString("MMM dd");
                                 Color rowColor = Color.White;
                                 Color colColor = Color.White;
                                 if (game.home_points.HasValue && game.away_points.HasValue)
@@ -169,19 +167,19 @@ namespace FootballTools.Reports
                                     colColor = rowWin ? Constants.LossColor : Constants.WinColor;
                                 }
 
-                                labels[teamIndex + 1, rivalIndex + 1] = entry;
-                                colors[teamIndex + 1, rivalIndex + 1] = rowColor;
+                                labels[teamIndex, rivalIndex] = entry;
+                                colors[teamIndex, rivalIndex] = rowColor;
 
-                                labels[rivalIndex + 1, teamIndex + 1] = entry;
-                                colors[rivalIndex + 1, teamIndex + 1] = colColor;
+                                labels[rivalIndex, teamIndex] = entry;
+                                colors[rivalIndex, teamIndex] = colColor;
                             }
                         }
                     }
                 }
             }
 
-            for (int i = 0; i < sortedTeams.Count + 1; i++)
-                for (int j = 0; j < sortedTeams.Count + 1; j++)
+            for (int i = 0; i < sortedTeams.Count; i++)
+                for (int j = 0; j < sortedTeams.Count; j++)
                 {
                     if (labels[i, j] == null)
                     {
@@ -190,7 +188,7 @@ namespace FootballTools.Reports
                 }
 
 
-            return new DataMatrix(labels, colors);
+            return new DataMatrix(headers, headers, labels, colors);
         }
 
         /// <summary>
@@ -210,16 +208,41 @@ namespace FootballTools.Reports
             grid.DefaultCellStyle.SelectionBackColor = Color.LightGray;
             grid.ColumnCount = matrix.Labels.GetLength(1);
             grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            grid.AllowUserToResizeColumns = false;
+            //Special code to hide the black arrow in the row header
+            //grid.RowHeadersDefaultCellStyle.Padding = new Padding(grid.RowHeadersWidth);
+            //grid.RowPostPaint += (sender, e) =>
+            //{
+            //    object o = grid.Rows[e.RowIndex].HeaderCell.Value;
+
+            //    e.Graphics.FillRectangle(new SolidBrush(grid.RowHeadersDefaultCellStyle.BackColor),
+            //        e.RowBounds.Left + 1, e.RowBounds.Top + 1,
+            //        grid.Rows[e.RowIndex].HeaderCell.Size.Width - 2, grid.Rows[e.RowIndex].HeaderCell.Size.Height - 2);
+
+            //    e.Graphics.DrawString(o != null ? o.ToString() : "",
+            //        grid.Font, 
+            //        new SolidBrush(grid.RowHeadersDefaultCellStyle.ForeColor),
+            //        //new PointF((float)e.RowBounds.Left + 2, (float)e.RowBounds.Top + 4),
+            //        new RectangleF(e.RowBounds.Left + 1, e.RowBounds.Top + 1,
+            //            grid.Rows[e.RowIndex].HeaderCell.Size.Width - 2, grid.Rows[e.RowIndex].HeaderCell.Size.Height - 2),
+            //        new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.LineLimit });
+            //};
+
             for (int c = 0; c < matrix.Labels.GetLength(1); c++)
             {
                 grid.Columns[c].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 grid.Columns[c].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                if (matrix.ColumnHeaders != null)
+                {
+                    grid.Columns[c].HeaderText = matrix.ColumnHeaders[c];
+                }
             }
 
             //Add the data and BG color to each cell
             for (int r = 0; r < matrix.Labels.GetLength(0); r++)
             {
                 DataGridViewRow row = new DataGridViewRow();
+
                 row.CreateCells(grid);
 
                 for (int c = 0; c < matrix.Labels.GetLength(1); c++)
@@ -229,6 +252,10 @@ namespace FootballTools.Reports
                 }
 
                 grid.Rows.Add(row);
+                if (matrix.RowHeaders != null)
+                {
+                    row.HeaderCell.Value = matrix.RowHeaders[r];
+                }
             }
 
             grid.ClearSelection();

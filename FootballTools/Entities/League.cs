@@ -20,6 +20,10 @@ namespace FootballTools.Entities
 
         private static List<Conference> StructureFromFile(string divisionFile)
         {
+            int conferenceId = 1;
+            int divisionId = 1;
+            int teamId = 1;
+
             List<Conference> ret = new List<Conference>();
 
             //Load the tex file containing division info
@@ -43,7 +47,8 @@ namespace FootballTools.Entities
 
                 if (foundConference == null)
                 {
-                    foundConference = new Conference(conferenceName);
+                    foundConference = new Conference(conferenceId, conferenceName);
+                    conferenceId++;
                     ret.Add(foundConference);
                 }
 
@@ -62,11 +67,13 @@ namespace FootballTools.Entities
 
                 if (foundDivision == null)
                 {
-                    foundDivision = new Division(divisionName, conferenceName);
+                    foundDivision = new Division(divisionId, divisionName, conferenceName);
+                    divisionId++;
                     foundConference.Divisions.Add(foundDivision);
                 }
 
-                foundDivision.Teams.Add(new Team(parts[1].Trim(), divisionName, conferenceName));
+                foundDivision.Teams.Add(new Team(teamId, parts[1].Trim(), divisionName, conferenceName));
+                teamId++;
             }
 
             ret.Sort((x, y) => x.Name.CompareTo(y.Name));

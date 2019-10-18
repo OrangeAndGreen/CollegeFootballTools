@@ -3,6 +3,7 @@ using FootballTools.Entities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading;
 
 namespace FootballTools.Analysis
@@ -15,156 +16,144 @@ namespace FootballTools.Analysis
     {
         private Thread mThread { get; set; }
         private ConcurrentQueue<DivisionWinnerCalculatorCommand> mCommandQueue = new ConcurrentQueue<DivisionWinnerCalculatorCommand>();
+        private readonly Dictionary<string, ITiebreaker> mTiebreakers;
+        private List<int> mScenariosCalculated;
+        private List<double> mScenarioTime;
+
+        private League mLeague = null;
+        private Division mDivision = null;
+        private List<string> mTeamNames = null;
+        private List<Game> mGames = null;
+        private Action<string, List<string>> mCallback = null;
 
         public DivisionWinnerCalculator()
         {
+            mTiebreakers = new Dictionary<string, ITiebreaker>
+            {
+                ["ACC"] = new AccTiebreaker(),
+                ["SEC"] = new SecTiebreaker(),
+                ["Mountain West"] = new MwcTiebreaker(),
+                ["Pac-12"] = new Pac12Tiebreaker(),
+                ["Mid-American"] = new MacTiebreaker(),
+                ["Conference USA"] = new CUsaTiebreaker(),
+                ["Sun Belt"] = new SunBeltTiebreaker(),
+                ["Big Ten"] = new Big10Tiebreaker(),
+                ["Big 12"] = new Big12Tiebreaker()
+            };
+
+            mScenariosCalculated = new List<int> {0,0,0};
+            mScenarioTime = new List<double> { 0, 0, 0 };
+
             mThread = new Thread(mainLoop);
             mThread.Start();
         }
 
+        public int Backlog => mCommandQueue.Count;
+
+        public void SetData(League league, Division division, List<Game> games, Action<string, List<string>> callback)
+        {
+            mCommandQueue.Enqueue(DivisionWinnerCalculatorCommand.CreateSetDataCommand(league, division, games, callback));
+        }
+        
+        public void Judge(List<string> winners)
+        {
+            mCommandQueue.Enqueue(DivisionWinnerCalculatorCommand.CreateJudgeCommand(winners));
+        }
+
+        public void Signal(Action<string, List<string>> callback)
+        {
+            mCommandQueue.Enqueue(DivisionWinnerCalculatorCommand.CreateSignalCommand(callback));
+        }
+
         public void Quit()
         {
-            mCommandQueue.Enqueue(new DivisionWinnerCalculatorCommand(null, null, null, null));
+            mCommandQueue.Enqueue(DivisionWinnerCalculatorCommand.CreateShutdownCommand());
 
             mThread.Join();
             mThread = null;
         }
 
-        public void Signal(Action<string, List<string>> callback)
-        {
-            mCommandQueue.Enqueue(new DivisionWinnerCalculatorCommand(null, null, null, callback));
-        }
-
-        public void Judge(Division division, List<Game> games, List<bool> homeWinners, Action<string, List<string>> callback)
-        {
-            mCommandQueue.Enqueue(new DivisionWinnerCalculatorCommand(division, games, homeWinners, callback));
-        }
-
         private void mainLoop()
         {
-            while (true)
+            bool quitter = false;
+            while (!quitter)
             {
                 bool dequeued = mCommandQueue.TryDequeue(out DivisionWinnerCalculatorCommand command);
                 if (dequeued)
                 {
-                    if(mCommandQueue.Count > 0 && mCommandQueue.Count % 100000 == 0)
-                    {
-                        Console.WriteLine($"Judgment queue: {mCommandQueue.Count}");
-                    }
+                    //if(mCommandQueue.Count > 0 && mCommandQueue.Count % 100000 == 0)
+                    //{
+                    //    Console.WriteLine($"Judgment queue: {mCommandQueue.Count}");
+                    //}
 
-                    if (command.Games == null)
+                    switch (command.CommandType)
                     {
-                        if (command.Callback != null)
-                        {
-                            command.Callback(null, null);
-                            continue;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                        case DivisionWinnerCalculatorCommandType.SetData:
+                            mLeague = command.ActiveLeague;
+                            mDivision = command.ActiveDivision;
+                            mGames = command.Games;
+                            mCallback = command.Callback;
 
-                    //Have a list of games and a list of winners, determine who won the division
-
-                    //Determine the teams we're interested in
-                    List<string> teamNames = new List<string>();
-                    foreach (Team team in command.ActiveDivision.Teams)
-                    {
-                        teamNames.Add(team.Name);
-                    }
-
-                    //Count the number of wins for each team
-                    Dictionary<string, int> winnerCounts = new Dictionary<string, int>();
-                    for (int i = 0; i < command.Games.Count; i++)
-                    {
-                        Game game = command.Games[i];
-                        string winner = command.HomeWinners[i] ? game.home_team : game.away_team;
-                        if (teamNames.Contains(winner))
-                        {
-                            if (winnerCounts.ContainsKey(winner))
+                            mTeamNames = new List<string>();
+                            foreach (Team team in mDivision.Teams)
                             {
-                                winnerCounts[winner]++;
+                                mTeamNames.Add(team.Name);
                             }
-                            else
-                            {
-                                winnerCounts.Add(winner, 1);
-                            }
-                        }
-                    }
 
-                    //Determine the max number of wins
-                    int maxWins = 0;
-                    foreach (string key in winnerCounts.Keys)
-                    {
-                        maxWins = Math.Max(winnerCounts[key], maxWins);
-                    }
-
-                    //Determine how many teams tied for the most wins
-                    int numWinners = 0;
-                    List<string> winners = new List<string>();
-                    foreach (string key in winnerCounts.Keys)
-                    {
-                        if (winnerCounts[key] == maxWins)
-                        {
-                            winners.Add(key);
-                            numWinners++;
-                        }
-                    }
-
-                    string finalWinner = null;
-                    switch (numWinners)
-                    {
-                        case 1:
-                            finalWinner = winners[0];
                             break;
-                        case 2:
-                            //See who won the head-to-head matchup
-                            for (int i = 0; i < command.Games.Count; i++)
+                        case DivisionWinnerCalculatorCommandType.Judge:
+                        {
+                            DateTime start = DateTime.Now;
+                            //Have a list of games and a list of winners, determine who won the division
+                            //Find the teams with the most wins
+                            List<string> winnerNames = Game.GetWinnersFromTeams(mTeamNames, mGames, command.Winners);
+
+                            string finalWinner = null;
+
+                            switch (winnerNames.Count)
                             {
-                                Game game = command.Games[i];
-                                bool homeWinner = command.HomeWinners[i];
-                                if (game.InvolvesTeam(winners[0]) && game.InvolvesTeam(winners[1]))
+                                case 1:
+                                    finalWinner = winnerNames[0];
+                                    break;
+                                case 2:
                                 {
-                                    finalWinner = homeWinner ? game.home_team : game.away_team;
+                                    //See who won the head-to-head matchup
+                                    Game matchup = Game.FindMatchup(mGames, mTeamNames[0], mTeamNames[1]);
+                                    if (matchup != null && matchup.GameAlreadyPlayed)
+                                    {
+                                        finalWinner = matchup.Winner.Equals(mTeamNames[0]) ? mTeamNames[0] : mTeamNames[1];
+                                    }
+
                                     break;
                                 }
+                                default:
+                                    finalWinner = mTiebreakers[mDivision.ConferenceName].BreakTie(mGames, command.Winners, winnerNames, mDivision);
+                                    break;
                             }
-                            break;
-                        case 3:
-                            //See if one team beat both of the others
-                            List<string> headToHeadWinners = new List<string>();
-                            for (int i = 0; i < command.Games.Count; i++)
-                            {
-                                Game game = command.Games[i];
-                                bool homeWinner = command.HomeWinners[i];
-                                int teamsInvolved = 0;
-                                foreach(string winner in winners)
-                                {
-                                    if(game.InvolvesTeam(winner))
-                                    {
-                                        teamsInvolved++;
-                                    }
-                                }
 
-                                if (teamsInvolved == 2)
-                                {
-                                    string headToHeadWinnner = homeWinner ? game.home_team : game.away_team;
-                                    if(headToHeadWinners.Contains(headToHeadWinnner))
-                                    {
-                                        finalWinner = headToHeadWinnner;
-                                        break;
-                                    }
-                                    headToHeadWinners.Add(headToHeadWinnner);
-                                }
+                            mCallback(finalWinner, winnerNames);
+                            mScenariosCalculated[Math.Min(2, winnerNames.Count - 1)]++;
+                            mScenarioTime[Math.Min(2, winnerNames.Count - 1)] += (DateTime.Now-start).TotalMilliseconds;
+
+                                break;
+                        }
+                        case DivisionWinnerCalculatorCommandType.Signal:
+                            for (int i = 0; i < mScenariosCalculated.Count; i++)
+                            {
+                                Console.WriteLine($"Spent {mScenarioTime[i] / 1000} s on {mScenariosCalculated[i]} {i+1}-winner scenarios ({mScenarioTime[i] / mScenariosCalculated[i]} ms/calc)");
                             }
+
+                            mScenariosCalculated = new List<int> { 0, 0, 0 };
+                            mScenarioTime = new List<double> { 0, 0, 0 };
+
+                            command.Callback?.Invoke(null, null);
+                            break;
+                        case DivisionWinnerCalculatorCommandType.Shutdown:
+                            quitter = true;
                             break;
                         default:
-                            finalWinner = TiebreakerFactory.BreakTie(winners, command.ActiveDivision);
-                            break;
+                            throw new Exception("Not ready for this case");
                     }
-
-                    command.Callback(finalWinner, winners);
                 }
             }
         }
