@@ -7,6 +7,8 @@ namespace FootballTools.Entities
     public class Team
     {
         public string Name { get; set; }
+        public string DivisionName { get; set; }
+        public string ConferenceName { get; set; }
         public int OverallWins { get; set; }
         public int OverallLosses { get; set; }
         public int OverallTies { get; set; }
@@ -20,9 +22,11 @@ namespace FootballTools.Entities
 
         public List<Game> Schedule { get; set; }
 
-        public Team(string name)
+        public Team(string name, string divisionName, string conferenceName)
         {
             Name = name;
+            DivisionName = divisionName;
+            ConferenceName = conferenceName;
             OverallWins = 0;
             OverallLosses = 0;
             OverallTies = 0;

@@ -16,7 +16,7 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  5) Highest ranking in College Football Playoff poll entering the final weekend of the regular season.
          */
 
-        public string BreakTie(List<string> teamNames, League league)
+        public string BreakTie(List<string> teamNames, Division division)
         {
             return null;
         }

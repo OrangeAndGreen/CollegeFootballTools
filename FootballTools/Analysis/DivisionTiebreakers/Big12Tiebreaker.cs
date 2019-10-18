@@ -16,7 +16,7 @@ namespace FootballTools.Analysis.DivisionTiebreakers
       4) If the tie cannot be broken by steps 1-3, they draw numbers.
      */
 
-    public string BreakTie(List<string> teamNames, League league)
+    public string BreakTie(List<string> teamNames, Division division)
     {
         return null;
     }

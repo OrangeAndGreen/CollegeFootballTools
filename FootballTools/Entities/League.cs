@@ -62,11 +62,11 @@ namespace FootballTools.Entities
 
                 if (foundDivision == null)
                 {
-                    foundDivision = new Division(divisionName);
+                    foundDivision = new Division(divisionName, conferenceName);
                     foundConference.Divisions.Add(foundDivision);
                 }
 
-                foundDivision.Teams.Add(new Team(parts[1].Trim()));
+                foundDivision.Teams.Add(new Team(parts[1].Trim(), divisionName, conferenceName));
             }
 
             ret.Sort((x, y) => x.Name.CompareTo(y.Name));

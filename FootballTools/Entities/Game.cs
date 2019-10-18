@@ -75,6 +75,8 @@ namespace FootballTools.Entities
         public bool? HomeWin => GameAlreadyPlayed ? (home_points.Value > away_points.Value) : (bool?)null;
         public bool? AwayWin => GameAlreadyPlayed ? (away_points.Value > home_points.Value) : (bool?)null;
 
+        public string Winner => GameAlreadyPlayed ? (home_points.Value > away_points.Value ? home_team : away_team) : null;
+
         public bool InvolvesTeam(string team)
         {
             return home_team.Equals(team) || away_team.Equals(team);

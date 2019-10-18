@@ -11,14 +11,14 @@ namespace FootballTools.Analysis.DivisionTiebreakers
         private static TiebreakerFactory mInstance;
         private readonly Dictionary<string, ITiebreaker> mTiebreakers;
 
-        public static string BreakTie(List<string> teamNames, League league)
+        public static string BreakTie(List<string> teamNames, Division division)
         {
             if (mInstance == null)
             {
                 mInstance = new TiebreakerFactory();
             }
 
-            return mInstance.BreakTieInternal(teamNames, league);
+            return mInstance.BreakTieInternal(teamNames, division);
         }
 
         private TiebreakerFactory()
@@ -37,17 +37,11 @@ namespace FootballTools.Analysis.DivisionTiebreakers
             };
         }
 
-        private string BreakTieInternal(List<string> teamNames, League league)
+        private string BreakTieInternal(List<string> teamNames, Division division)
         {
-            foreach (Conference conference in league.Conferences)
+            if (division.FindTeam(teamNames[0]) != null)
             {
-                foreach (Division division in conference.Divisions)
-                {
-                    if (division.FindTeam(teamNames[0]) != null)
-                    {
-                        return mTiebreakers[conference.Name].BreakTie(teamNames, league);
-                    }
-                }
+                return mTiebreakers[division.ConferenceName].BreakTie(teamNames, division);
             }
 
             return null;

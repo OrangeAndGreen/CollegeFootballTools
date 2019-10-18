@@ -1,4 +1,5 @@
-﻿using FootballTools.Entities;
+﻿using FootballTools.Analysis.DivisionTiebreakers;
+using FootballTools.Entities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -159,6 +160,7 @@ namespace FootballTools.Analysis
                             }
                             break;
                         default:
+                            finalWinner = TiebreakerFactory.BreakTie(winners, command.ActiveDivision);
                             break;
                     }
 

@@ -7,11 +7,13 @@ namespace FootballTools.Entities
     public class Division
     {
         public string Name { get; set; }
+        public string ConferenceName { get; set; }
         public List<Team> Teams { get; set; }
 
-        public Division(string name)
+        public Division(string name, string conferenceName)
         {
             Name = name;
+            ConferenceName = conferenceName;
             Teams = new List<Team>();
         }
 

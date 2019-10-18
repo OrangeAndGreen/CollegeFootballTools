@@ -16,7 +16,7 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  5) Highest CFP ranking (or the composite of selected computer rankings if neither team is ranked in the CFP rankings) following the final week of conference regular‐season games
          */
 
-        public string BreakTie(List<string> teamNames, League league)
+        public string BreakTie(List<string> teamNames, Division division)
         {
             return null;
         }

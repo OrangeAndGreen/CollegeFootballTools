@@ -19,8 +19,101 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  7) The representative shall be chosen by a draw as administered by the Commissioner or Commissioner's designee.
          */
 
-        public string BreakTie(List<string> teamNames, League league)
+        public string BreakTie(List<string> teamNames, Division division)
         {
+            List<Game> games = Game.FilterGamesByTeams(division.AllGames, teamNames);
+
+            //1) See if any team wins the combined head-to-head matchups
+            int[] headToHeadWins = new int[teamNames.Count];
+            foreach(Game game in games)
+            {
+                bool gameProcessed = false;
+                for (int index1= 0; index1 < teamNames.Count && !gameProcessed; index1++)
+                {
+                    string team1 = teamNames[index1];
+                    if (game.GameAlreadyPlayed && game.InvolvesTeam(team1))
+                    {
+                        for (int index2 = 0; index2 < teamNames.Count; index2++)
+                        {
+                            string team2 = teamNames[index2];
+                            if (game.InvolvesTeam(team2))
+                            {
+                                int winnerIndex = game.Winner.Equals(team1) ? index1 : index2;
+                                headToHeadWins[winnerIndex]++;
+                                gameProcessed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            int maxWins = -1;
+            List<string> tiedTeams = new List<string>();
+            for(int i=0; i< teamNames.Count; i++)
+            {
+                int headToHead = headToHeadWins[i];
+                if (headToHead > maxWins)
+                {
+                    tiedTeams = new List<string> { teamNames[i] };
+                }
+            }
+
+            if(tiedTeams.Count == 1)
+            {
+                return tiedTeams[0];
+            }
+
+            //2) See if any team win has the best record within the division
+
+            //Build the list of team names for the division
+            List<string> divisionTeamNames = new List<string>();
+            foreach (Team team in division.Teams)
+            {
+                divisionTeamNames.Add(team.Name);
+            }
+
+            List<Game> divisionGames = Game.FilterGamesByTeams(division.AllGames, divisionTeamNames);
+            int[] divisionWins = new int[divisionTeamNames.Count];
+            foreach (Game game in divisionGames)
+            {
+                bool gameProcessed = false;
+                for (int index1 = 0; index1 < divisionTeamNames.Count && !gameProcessed; index1++)
+                {
+                    string team1 = divisionTeamNames[index1];
+                    if (game.GameAlreadyPlayed && game.InvolvesTeam(team1))
+                    {
+                        for (int index2 = 0; index2 < divisionTeamNames.Count; index2++)
+                        {
+                            string team2 = divisionTeamNames[index2];
+                            if (game.InvolvesTeam(team2))
+                            {
+                                int winnerIndex = game.Winner.Equals(team1) ? index1 : index2;
+                                divisionWins[winnerIndex]++;
+                                gameProcessed = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            maxWins = -1;
+            tiedTeams = new List<string>();
+            for (int i = 0; i < divisionTeamNames.Count; i++)
+            {
+                int divisionWin = divisionWins[i];
+                if (divisionWin > maxWins)
+                {
+                    tiedTeams = new List<string> { divisionTeamNames[i] };
+                }
+            }
+
+            if (tiedTeams.Count == 1)
+            {
+                return tiedTeams[0];
+            }
+
             return null;
         }
     }
