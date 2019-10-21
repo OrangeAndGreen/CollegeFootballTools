@@ -51,8 +51,8 @@
             this.teamSelector = new System.Windows.Forms.ComboBox();
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
-            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.progressText = new System.Windows.Forms.ToolStripStatusLabel();
+            this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.tabControl1.SuspendLayout();
             this.textTab.SuspendLayout();
             this.matrixTab.SuspendLayout();
@@ -220,12 +220,13 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.matrixGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.matrixGrid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            this.matrixGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.matrixGrid.ShowCellErrors = false;
             this.matrixGrid.ShowEditingIcon = false;
             this.matrixGrid.ShowRowErrors = false;
             this.matrixGrid.Size = new System.Drawing.Size(868, 273);
             this.matrixGrid.TabIndex = 0;
+            this.matrixGrid.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.matrixGrid_CellPainting);
+            this.matrixGrid.SelectionChanged += new System.EventHandler(this.matrixGrid_SelectionChanged);
             // 
             // leagueTab
             // 
@@ -298,21 +299,21 @@
             // statusText
             // 
             this.statusText.Name = "statusText";
-            this.statusText.Size = new System.Drawing.Size(731, 17);
+            this.statusText.Size = new System.Drawing.Size(762, 17);
             this.statusText.Spring = true;
             this.statusText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // progressBar
-            // 
-            this.progressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(100, 16);
             // 
             // progressText
             // 
             this.progressText.Name = "progressText";
             this.progressText.Size = new System.Drawing.Size(0, 17);
             this.progressText.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(100, 16);
             // 
             // Form1
             // 

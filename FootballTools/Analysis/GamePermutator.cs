@@ -44,6 +44,19 @@ namespace FootballTools.Analysis
 
         private void Explore(GameList games, int startIndex, Action<GameList, List<int>, List<TeamResult>, int, double> callback)
         {
+            /*
+             * Thinking about recursive return
+	            Looking for a game where winner/loser determines whether a team has any chance to win the division
+	            Two cases:
+		            Hit an endpoint:
+			            return the division winner
+		            Ran child recursions:
+			            Get possible winner lists for both children
+			            If a team exists in one list but not the other, we have a crucial game
+	            PROBLEM:
+		            Permutator doesn't know who won...
+		            Would need judgment to be a synchronous call for the permutator
+             */
             if (startIndex >= games.Count)
             {
                 //Reached an endpoint, output a permutation

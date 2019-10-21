@@ -92,10 +92,11 @@ namespace FootballTools.Reports
             return ret;
         }
 
+
         /// <summary>
         /// Populates a grid with a team head-to-head matrix given the conference/division/team selections
         /// </summary>
-        public static void PopulateMatrix(League league, DisplayType displayType, DataGridView grid, string conferenceName, string divisionName, string teamName)
+        public static DataMatrix GenerateTeamMatrix(League league, DisplayType displayType, string conferenceName, string divisionName, string teamName)
         {
             DataMatrix matrix;
             switch (displayType)
@@ -122,7 +123,7 @@ namespace FootballTools.Reports
                     throw new Exception("Unknown display type");
             }
 
-            PopulateMatrix(grid, matrix);
+            return matrix;
         }
 
         /// <summary>
@@ -190,76 +191,6 @@ namespace FootballTools.Reports
 
 
             return new DataMatrix(headers, headers, labels, colors);
-        }
-
-        /// <summary>
-        /// Populates a DataGridView given a DataMatrix
-        /// </summary>
-        private static void PopulateMatrix(DataGridView grid, DataMatrix matrix)
-        {
-            grid.DataSource = null;
-            grid.Rows.Clear();
-
-            if (matrix == null)
-            {
-                return;
-            }
-
-            //Setup the grid
-            grid.DefaultCellStyle.SelectionBackColor = Color.LightGray;
-            grid.ColumnCount = matrix.Labels.GetLength(1);
-            grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            grid.AllowUserToResizeColumns = false;
-            //Special code to hide the black arrow in the row header
-            //grid.RowHeadersDefaultCellStyle.Padding = new Padding(grid.RowHeadersWidth);
-            //grid.RowPostPaint += (sender, e) =>
-            //{
-            //    object o = grid.Rows[e.RowIndex].HeaderCell.Value;
-
-            //    e.Graphics.FillRectangle(new SolidBrush(grid.RowHeadersDefaultCellStyle.BackColor),
-            //        e.RowBounds.Left + 1, e.RowBounds.Top + 1,
-            //        grid.Rows[e.RowIndex].HeaderCell.Size.Width - 2, grid.Rows[e.RowIndex].HeaderCell.Size.Height - 2);
-
-            //    e.Graphics.DrawString(o != null ? o.ToString() : "",
-            //        grid.Font, 
-            //        new SolidBrush(grid.RowHeadersDefaultCellStyle.ForeColor),
-            //        //new PointF((float)e.RowBounds.Left + 2, (float)e.RowBounds.Top + 4),
-            //        new RectangleF(e.RowBounds.Left + 1, e.RowBounds.Top + 1,
-            //            grid.Rows[e.RowIndex].HeaderCell.Size.Width - 2, grid.Rows[e.RowIndex].HeaderCell.Size.Height - 2),
-            //        new StringFormat { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center, Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.LineLimit });
-            //};
-
-            for (int c = 0; c < matrix.Labels.GetLength(1); c++)
-            {
-                grid.Columns[c].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                grid.Columns[c].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                if (matrix.ColumnHeaders != null)
-                {
-                    grid.Columns[c].HeaderText = matrix.ColumnHeaders[c];
-                }
-            }
-
-            //Add the data and BG color to each cell
-            for (int r = 0; r < matrix.Labels.GetLength(0); r++)
-            {
-                DataGridViewRow row = new DataGridViewRow();
-
-                row.CreateCells(grid);
-
-                for (int c = 0; c < matrix.Labels.GetLength(1); c++)
-                {
-                    row.Cells[c].Value = matrix.Labels[r, c];
-                    row.Cells[c].Style.BackColor = matrix.Colors[r, c];
-                }
-
-                grid.Rows.Add(row);
-                if (matrix.RowHeaders != null)
-                {
-                    row.HeaderCell.Value = matrix.RowHeaders[r];
-                }
-            }
-
-            grid.ClearSelection();
         }
     }
 }
