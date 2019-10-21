@@ -21,7 +21,7 @@ namespace FootballTools.Entities
         public string ConferenceRecord => $"{ConferenceWins}-{ConferenceLosses}";
         public string ComboRecord => $"{OverallRecord} ({ConferenceRecord})";
 
-        public List<Game> Schedule { get; set; }
+        public GameList Schedule { get; set; }
 
         public Team(int id, string name, string divisionName, string conferenceName)
         {
@@ -35,7 +35,29 @@ namespace FootballTools.Entities
             ConferenceWins = 0;
             ConferenceLosses = 0;
             ConferenceTies = 0;
-            Schedule = new List<Game>();
+            Schedule = new GameList();
+        }
+
+        //public static List<string> GetTeamNames(List<Team> teams)
+        //{
+        //    List<string> ret = new List<string>();
+        //    foreach (Team team in teams)
+        //    {
+        //        ret.Add(team.Name);
+        //    }
+
+        //    return ret;
+        //}
+
+        public static List<int> GetTeamIds(List<Team> teams)
+        {
+            List<int> ret = new List<int>();
+            foreach (Team team in teams)
+            {
+                ret.Add(team.Id);
+            }
+
+            return ret;
         }
 
         public static void SortTeamList(List<Team> teams, bool sortByTotalOrConferenceWins)

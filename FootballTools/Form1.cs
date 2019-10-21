@@ -41,7 +41,7 @@ namespace FootballTools
         private Dictionary<string, TabPage> mTabs = new Dictionary<string, TabPage>();
 
         private League mLeague = null;
-        private DivisionWinnerCalculator mJudge = new DivisionWinnerCalculator();
+        private int mUpdateCounter = 0;
 
         public Form1()
         {
@@ -81,7 +81,7 @@ namespace FootballTools
         {
             UpdateStatus("Loading data", 0);
 
-            List<Game> games = CfbDownloader.Retrieve(int.Parse(yearTextbox.Text), forceDownload);
+            GameList games = CfbDownloader.Retrieve(int.Parse(yearTextbox.Text), forceDownload);
             mLeague = new League(games, DivisionsFilename);
 
             UpdateStatus("Finished loading", 0);
@@ -186,14 +186,19 @@ namespace FootballTools
                 EnableDisableAnalyzeButton(false);
 
                 //Start an async job to calculate the division scenarios
-                DivisionScenarioAnalyzer analyzer = new DivisionScenarioAnalyzer();
-
-                analyzer.Analyze(mLeague, SelectedConference, SelectedDivision, mJudge,
-                    (status, progress) =>
+                DivisionScenarioAnalyzer analyzer = DivisionScenarioAnalyzer.Analyze(mLeague, SelectedConference, SelectedDivision,
+                    (judgmentsDone, totalJudgments, elapsed) =>
                     {
-                        UpdateStatus(status, progress);
+                        mUpdateCounter++;
+                        if(mUpdateCounter >= Constants.AnalysisUiUpdateInterval)
+                        {
+                            string status = $"Judging {judgmentsDone} of {totalJudgments} outcomes ({elapsed})";
+                            double progress = judgmentsDone / totalJudgments;
+                            UpdateStatus(status, progress);
+                            mUpdateCounter = 0;
+                        }
                     },
-                    (outputLines) =>
+                    (outputLines, elapsed) =>
                     {
                         UpdateStatus("Analysis complete", 0);
                         UpdateReport("Division Scenarios:" + Constants.Newline + string.Join(Constants.Newline, outputLines) + Constants.Newline + Constants.Newline + reportTextbox.Text);
@@ -319,12 +324,14 @@ namespace FootballTools
                 statusBar.Invoke((MethodInvoker)delegate
                 {
                     statusText.Text = status;
+                    progressText.Text = percentage > 0 ? $"{(percentage*100):0.0}%" : string.Empty;
                     progressBar.Value = (int)Math.Round(percentage * 100);
                 });
             }
             else
             {
                 statusText.Text = status;
+                progressText.Text = percentage > 0 ? $"{(percentage * 100):0.0}%" : string.Empty;
                 progressBar.Value = (int)Math.Round(percentage * 100);
             }
         }
@@ -353,7 +360,7 @@ namespace FootballTools
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            mJudge.Quit();
+            //mJudge.Quit();
         }
     }
 }

@@ -38,7 +38,7 @@
 
 
 
-//        public List<Game> AllGames { get; set; }
+//        public GameList AllGames { get; set; }
 //        public List<string> Teams { get; set; }
 //        public Dictionary<string, List<string>> Conferences { get; set; }
 //        public List<Conference> AllConferences { get; set; }
@@ -46,7 +46,7 @@
 //        public void Analyze(int year)
 //        {
 //            //Download all games for the specified year
-//            AllGames = new List<Game>();
+//            AllGames = new GameList();
 
 //            Teams = new List<string>();
 //            Conferences = new Dictionary<string, List<string>>();
@@ -61,13 +61,13 @@
 
 //                try
 //                {
-//                    List<Game> games = new List<Game>();
+//                    GameList games = new GameList();
 //                    //Get the data from the HTTP request
 //                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
 //                    using (Stream stream = response.GetResponseStream())
 //                    {
-//                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Game>));
-//                        games = (List<Game>)serializer.ReadObject(stream);
+//                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(GameList));
+//                        games = (GameList)serializer.ReadObject(stream);
 //                    }
 
 //                    if (games != null)

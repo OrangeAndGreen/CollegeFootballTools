@@ -1,6 +1,7 @@
 ﻿using FootballTools.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace FootballTools.Analysis
@@ -10,76 +11,70 @@ namespace FootballTools.Analysis
     /// </summary>
     public class GamePermutator
     {
-        public double TotalPermutations { get; private set; }
-        public int CompletedPermutations { get; private set; }
-        public int LastUpdateCounter { get; private set; }
+        private double TotalPermutations { get; set; }
+        private int CompletedPermutations { get; set; }
 
-        public void PermutateGames(List<Game> games, Action<List<Game>,List<string>> callback)
+        public static void PermutateGames(GameList games, Action<GameList,List<int>, List<TeamResult>, int, double> callback)
         {
+            GamePermutator permutator = new GamePermutator();
             Thread thread = new Thread(delegate ()
             {
-                doPermutateGames(games, callback);
+                permutator.doPermutateGames(games, callback);
             });
             thread.Start();
         }
 
-        private void doPermutateGames(List<Game> games, Action<List<Game>, List<string>> callback)
+        private void doPermutateGames(GameList games, Action<GameList, List<int>, List<TeamResult>, int, double> callback)
         {
             CompletedPermutations = 0;
 
-            int totalGames = 0;
-            List<string> winners = new List<string>();
-            foreach (Game game in games)
-            {
-                //Setup the list of already completed games
-                if (game.GameAlreadyPlayed)
-                {
-                    winners.Add(game.Winner);
-                }
+            int completedGames = games.Sum(game => game.GameAlreadyPlayed ? 1 : 0);
 
-                totalGames++;
-            }
+            TotalPermutations = Math.Pow(2, games.Count - completedGames);
 
-            TotalPermutations = Math.Pow(2, totalGames - winners.Count);
-
-            Console.WriteLine($"{totalGames} games to analyze ({winners.Count} completed)");
+            Console.WriteLine($"{games.Count} games to analyze ({completedGames} completed)");
 
             //Try calculating all possible results (BIG RECURSIVE CALL)
-            Explore(games, winners.Count, winners, callback);
+            Explore(games, completedGames, callback);
 
             Console.WriteLine("Done permuting games");
 
-            callback(games, null);
+            callback(games, null, null, CompletedPermutations, TotalPermutations);
         }
 
-        private void Explore(List<Game> games, int startIndex, List<string> winners, Action<List<Game>, List<string>> callback)
+        private void Explore(GameList games, int startIndex, Action<GameList, List<int>, List<TeamResult>, int, double> callback)
         {
-            LastUpdateCounter++;
-            if (LastUpdateCounter > (TotalPermutations/20))
-            {
-                Console.WriteLine($"{(int)Math.Round(CompletedPermutations / TotalPermutations * 100)}% done permuting");
-                LastUpdateCounter = 0;
-            }
-
             if (startIndex >= games.Count)
             {
                 //Reached an endpoint, output a permutation
-                callback(games, new List<string>(winners));
+                CompletedPermutations++;
+                
+                List<int> winners = new List<int>();
+                foreach(Game winnerGame in games)
+                {
+                    winners.Add(winnerGame.WinnerId);
+                }
+
+                List<TeamResult> results = new List<TeamResult>();
+                foreach(TeamResult result in games.Results.Values)
+                {
+                    results.Add(new TeamResult(result));
+                }
+
+                callback(games, winners, results, CompletedPermutations, TotalPermutations);
                 return;
             }
 
-            CompletedPermutations++;
-
-            Game game = games[startIndex];
-
             //Recursively call to explore 1) home team winning and 2) away team winning
-            winners.Add(game.home_team);
-            Explore(games, startIndex + 1, winners, callback);
-            winners.RemoveAt(winners.Count - 1);
-
-            winners.Add(game.away_team);
-            Explore(games, startIndex + 1, winners, callback);
-            winners.RemoveAt(winners.Count - 1);
+            Game game = games[startIndex];
+            
+            games.SetProposedGameWinner(startIndex, game.HomeTeamId);
+            Explore(games, startIndex + 1, callback);
+            
+            games.SetProposedGameWinner(startIndex, game.AwayTeamId);
+            Explore(games, startIndex + 1, callback);
+            
+            games.SetProposedGameWinner(startIndex, null);
         }
     }
 }

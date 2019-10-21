@@ -7,7 +7,7 @@ namespace FootballTools.Entities
     {
         public List<Conference> Conferences { get; set; }
 
-        public League(List<Game> games, string divisionFile)
+        public League(GameList games, string divisionFile)
         {
             Conferences = StructureFromFile(divisionFile);
 
@@ -90,12 +90,23 @@ namespace FootballTools.Entities
             return ret;
         }
 
-        private  void IntegrateGameInfo(List<Game> games)
+        private  void IntegrateGameInfo(GameList games)
         {
             foreach (Game game in games)
             {
                 Team homeTeam = FindTeam(game.home_team);
                 Team awayTeam = FindTeam(game.away_team);
+
+                if (homeTeam != null)
+                {
+                    game.HomeTeamId = homeTeam.Id;
+                }
+                if (awayTeam != null)
+                {
+                    game.AwayTeamId = awayTeam.Id;
+                }
+
+                game.DivisionGame = homeTeam?.DivisionName != null && awayTeam?.DivisionName != null && homeTeam.DivisionName.Equals(awayTeam.DivisionName);
 
                 homeTeam?.Schedule.Add(game);
                 awayTeam?.Schedule.Add(game);
@@ -128,7 +139,7 @@ namespace FootballTools.Entities
                 {
                     foreach (Team team in division.Teams)
                     {
-                        Game.SortGameList(team.Schedule);
+                        team.Schedule.Sort();
                     }
                 }
             }
@@ -166,7 +177,7 @@ namespace FootballTools.Entities
             return null;
         }
 
-        public Team FindTeam(string name)
+        public Team FindTeam(string teamName)
         {
             foreach (Conference conference in Conferences)
             {
@@ -174,7 +185,26 @@ namespace FootballTools.Entities
                 {
                     foreach (Team team in division.Teams)
                     {
-                        if (team.Name.Equals(name))
+                        if (team.Name.Equals(teamName))
+                        {
+                            return team;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public Team FindTeam(int id)
+        {
+            foreach (Conference conference in Conferences)
+            {
+                foreach (Division division in conference.Divisions)
+                {
+                    foreach (Team team in division.Teams)
+                    {
+                        if (team.Id == id)
                         {
                             return team;
                         }
@@ -200,11 +230,11 @@ namespace FootballTools.Entities
             }
         }
 
-        public List<Game> AllGames
+        public GameList AllGames
         {
             get
             {
-                List<Game> games = new List<Game>();
+                GameList games = new GameList();
                 foreach (Conference conference in Conferences)
                 {
                     foreach (Division division in conference.Divisions)
@@ -222,7 +252,7 @@ namespace FootballTools.Entities
                     }
                 }
 
-                Game.SortGameList(games);
+                games.Sort();
 
                 return games;
             }

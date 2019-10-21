@@ -16,16 +16,16 @@ namespace FootballTools.CFBData
     {
         private static readonly string CacheDirectory = "Cache";
 
-        public static List<Game> Retrieve(int year, bool forceDownload = false)
+        public static GameList Retrieve(int year, bool forceDownload = false)
         {
             //Download all games for the specified year
-            List <Game> games = new List<Game>();
+            GameList games = new GameList();
 
             for (int week = 1; week <= 15; week++)
             {
                 try
                 {
-                    List<Game> weekGames = null;
+                    GameList weekGames = null;
                     if (!forceDownload)
                     {
                         weekGames = RetrieveWeekFromCache(year, week);
@@ -43,8 +43,8 @@ namespace FootballTools.CFBData
                         using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                         using (Stream stream = response.GetResponseStream())
                         {
-                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Game>));
-                            weekGames = (List<Game>) serializer.ReadObject(stream);
+                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(GameList));
+                            weekGames = (GameList) serializer.ReadObject(stream);
                             CacheWeek(year, week, weekGames);
                         }
                     }
@@ -72,7 +72,7 @@ namespace FootballTools.CFBData
             return Path.Combine(CacheDirectory, $"{year}_{week}.json");
         }
 
-        private static List<Game> RetrieveWeekFromCache(int year, int week)
+        private static GameList RetrieveWeekFromCache(int year, int week)
         {
             try
             {
@@ -89,8 +89,8 @@ namespace FootballTools.CFBData
 
                 using (Stream stream = new FileStream(filepath, FileMode.Open))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Game>));
-                    return (List<Game>)serializer.ReadObject(stream);
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(GameList));
+                    return (GameList)serializer.ReadObject(stream);
                 }
             }
             catch (Exception e)
@@ -100,7 +100,7 @@ namespace FootballTools.CFBData
             }
         }
 
-        private static void CacheWeek(int year, int week, List<Game> games)
+        private static void CacheWeek(int year, int week, GameList games)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace FootballTools.CFBData
 
                 using (Stream stream = new FileStream(filepath, FileMode.CreateNew))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Game>));
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(GameList));
                     serializer.WriteObject(stream, games);
                 }
             }

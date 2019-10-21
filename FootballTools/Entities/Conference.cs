@@ -49,11 +49,11 @@ namespace FootballTools.Entities
             }
         }
 
-        public List<Game> AllGames
+        public GameList AllGames
         {
             get
             {
-                List<Game> games = new List<Game>();
+                GameList games = new GameList();
                 foreach (Division division in Divisions)
                 {
                     foreach (Team team in division.Teams)
@@ -68,7 +68,7 @@ namespace FootballTools.Entities
                     }
                 }
 
-                Game.SortGameList(games);
+                games.Sort();
 
                 return games;
             }

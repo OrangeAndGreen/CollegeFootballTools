@@ -19,9 +19,9 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  8) If still tied, the representative will be the team that has not participated in the championship game most recently.
          */
 
-        public string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division)
+        public int BreakTie(GameList games, List<int> winners, List<TeamResult> teamResults, List<int> teamIds, Division division)
         {
-            return null;
+            return -1;
         }
     }
 }

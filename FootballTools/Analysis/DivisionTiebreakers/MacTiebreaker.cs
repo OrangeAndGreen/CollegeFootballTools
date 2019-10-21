@@ -14,9 +14,9 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  3) Comparison of conference winning percentage of cross-over opponents of tied teams
          */
 
-        public string BreakTie(List<Game> games, List<string> winners, List<string> teamNames, Division division)
+        public int BreakTie(GameList games, List<int> winners, List<TeamResult> teamResults, List<int> teamIds, Division division)
         {
-            return null;
+            return -1;
         }
     }
 }

@@ -9,5 +9,6 @@ namespace FootballTools.Entities
         public static readonly Color WinColor = Color.LightGreen;
         public static readonly Color LossColor = Color.LightPink;
         public static readonly int NumTiebreakers = 10;
+        public static readonly int AnalysisUiUpdateInterval = 10000;
     }
 }

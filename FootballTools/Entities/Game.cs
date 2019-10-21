@@ -46,6 +46,11 @@ namespace FootballTools.Entities
         [DataMember(IsRequired = false)]
         public int[] away_line_scores;
 
+        public int HomeTeamId { get; set; }
+        public int AwayTeamId { get; set; }
+
+        public bool DivisionGame { get; set; }
+
         public DateTime GameDate
         {
             get
@@ -62,7 +67,7 @@ namespace FootballTools.Entities
 
                     return new DateTime(year, month, day, hour, minute, second);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return DateTime.Now;
                 }
@@ -75,119 +80,26 @@ namespace FootballTools.Entities
         public bool? HomeWin => GameAlreadyPlayed ? (home_points.Value > away_points.Value) : (bool?)null;
         public bool? AwayWin => GameAlreadyPlayed ? (away_points.Value > home_points.Value) : (bool?)null;
 
-        public string Winner => GameAlreadyPlayed ? (home_points.Value > away_points.Value ? home_team : away_team) : null;
+        public int WinnerId => ProposedWinnerId ?? (GameAlreadyPlayed ? (home_points.Value > away_points.Value ? HomeTeamId : AwayTeamId) : -1);
+        public int LoserId => ProposedLoserId ?? (GameAlreadyPlayed ? (home_points.Value > away_points.Value ? AwayTeamId : HomeTeamId) : -1);
 
-        public bool InvolvesTeam(string team)
+        public int? ProposedWinnerId { get; set; }
+        public int? ProposedLoserId
         {
-            return home_team.Equals(team) || away_team.Equals(team);
+            get
+            {
+                if(ProposedWinnerId.HasValue)
+                {
+                    return ProposedWinnerId.Value == HomeTeamId ? AwayTeamId : HomeTeamId;
+                }
+
+                return null;
+            }
         }
 
-        public static List<Game> FilterGamesByTeams(List<Game> games, List<string> teams)
+        public bool InvolvesTeam(int teamId)
         {
-            List<Game> filtered = new List<Game>();
-
-            foreach(Game game in games)
-            {
-                foreach(string team in teams)
-                {
-                    if(game.InvolvesTeam(team))
-                    {
-                        filtered.Add(game);
-                        break;
-                    }
-                }
-            }
-
-            return filtered;
-        }
-
-        public static void SortGameList(List<Game> games)
-        {
-            games.Sort(
-                    delegate (Game g1, Game g2)
-                    {
-                        int compareDate = g1.week.CompareTo(g2.week);
-                        if (compareDate == 0)
-                        {
-                            return g1.GameDate.CompareTo(g2.GameDate);
-                        }
-                        return compareDate;
-                    }
-                );
-        }
-
-        public static Game FindMatchup(List<Game> games, string team1, string team2)
-        {
-            foreach (Game game in games)
-            {
-                if (game.InvolvesTeam(team1) && game.InvolvesTeam(team2))
-                {
-                    return game;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Given a list of teams, identifies the team(s) with the most head-to-head wins
-        /// </summary>
-        /// <param name="games"></param>
-        /// <param name="teamNames"></param>
-        /// <returns></returns>
-        public static List<string> GetWinnersFromTeams(List<string> teamNames, List<Game> games, List<string> winners = null)
-        {
-            int[] headToHeadWins = new int[teamNames.Count];
-            for(int i=0; i<games.Count; i++)
-            {
-                Game game = games[i];
-                string winner = null;
-                if (winners != null)
-                {
-                    winner = winners.Count > i ? winners[i] : null;
-                }
-                else
-                {
-                    winner = game.GameAlreadyPlayed ? game.Winner : null;
-                }
-
-                if (winner != null)
-                {
-                    for (int index1 = 0; index1 < teamNames.Count; index1++)
-                    for (int index2 = index1 + 1; index2 < teamNames.Count; index2++)
-                    {
-                        string team1 = teamNames[index1];
-                        string team2 = teamNames[index2];
-
-                        if (!game.InvolvesTeam(team1) || !game.InvolvesTeam(team2))
-                        {
-                            continue;
-                        }
-
-                        int winnerIndex = winner.Equals(team1) ? index1 : index2;
-                        headToHeadWins[winnerIndex]++;
-                    }
-                }
-            }
-
-            int maxWins = -1;
-            List<string> tiedTeams = new List<string>();
-            for (int i = 0; i < teamNames.Count; i++)
-            {
-                int headToHead = headToHeadWins[i];
-                if (headToHead > maxWins)
-                {
-                    maxWins = headToHead;
-                    tiedTeams.Clear();
-                    tiedTeams.Add(teamNames[i]);
-                }
-                else if (headToHead == maxWins)
-                {
-                    tiedTeams.Add(teamNames[i]);
-                }
-            }
-
-            return tiedTeams;
+            return HomeTeamId == teamId || AwayTeamId == teamId;
         }
     }
 }

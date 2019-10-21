@@ -28,8 +28,11 @@ namespace FootballTools.Reports
                     teams = league.FindDivision(conferenceName, divisionName).Teams;
                     break;
                 case DisplayType.Team:
-                    teams = new List<Team> { league.FindTeam(teamName) };
-                    break;
+                    {
+                        Team team = league.FindTeam(teamName);
+                        teams = new List<Team> { league.FindTeam(team.Id) };
+                        break;
+                    }
                 default:
                     throw new Exception("Unknown display type");
             }
@@ -74,12 +77,8 @@ namespace FootballTools.Reports
             ret.Add(string.Empty);
 
             ret.Add("All games:");
-            List<string> teamNames = new List<string>();
-            foreach(Team team in sortedTeams)
-            {
-                teamNames.Add(team.Name);
-            }
-            List<Game> games = Game.FilterGamesByTeams(league.AllGames, teamNames);
+            List<int> teamIds = Team.GetTeamIds(sortedTeams);
+            GameList games = league.AllGames.FilterByTeams(teamIds);
             foreach (Game game in games)
             {
                 string entry = $"{game.home_team} v. {game.away_team}";
@@ -151,29 +150,31 @@ namespace FootballTools.Reports
                     {
                         Team rival = sortedTeams[rivalIndex];
 
-                        foreach (Game game in league.AllGames)
+                        Game game = league.AllGames.FindMatchup(team.Id, rival.Id);
+
+                        if (game != null)
                         {
-                            if ((game.home_team.Equals(team.Name) && game.away_team.Equals(rival.Name)) ||
-                                (game.home_team.Equals(rival.Name) && game.away_team.Equals(team.Name)))
+                            string entry = game.GameDate.ToString("MMM dd");
+                            Color rowColor = Color.White;
+                            Color colColor = Color.White;
+                            if (game.home_points.HasValue && game.away_points.HasValue)
                             {
-                                string entry = game.GameDate.ToString("MMM dd");
-                                Color rowColor = Color.White;
-                                Color colColor = Color.White;
-                                if (game.home_points.HasValue && game.away_points.HasValue)
-                                {
-                                    entry += $"{Constants.Newline}{game.home_points}-{game.away_points}";
-                                    bool rowWin = game.home_team.Equals(team.Name) == (game.home_points > game.away_points);
-                                    rowColor = rowWin ? Constants.WinColor : Constants.LossColor;
-                                    colColor = rowWin ? Constants.LossColor : Constants.WinColor;
-                                }
-
-                                labels[teamIndex, rivalIndex] = entry;
-                                colors[teamIndex, rivalIndex] = rowColor;
-
-                                labels[rivalIndex, teamIndex] = entry;
-                                colors[rivalIndex, teamIndex] = colColor;
+                                entry += $"{Constants.Newline}{game.home_points}-{game.away_points}";
+                                bool rowWin = (game.HomeTeamId == team.Id) == (game.home_points > game.away_points);
+                                rowColor = rowWin ? Constants.WinColor : Constants.LossColor;
+                                colColor = rowWin ? Constants.LossColor : Constants.WinColor;
                             }
+
+                            labels[teamIndex, rivalIndex] = entry;
+                            colors[teamIndex, rivalIndex] = rowColor;
+
+                            labels[rivalIndex, teamIndex] = entry;
+                            colors[rivalIndex, teamIndex] = colColor;
                         }
+                    }
+                    else
+                    {
+                        colors[teamIndex, rivalIndex] = Color.Black;
                     }
                 }
             }

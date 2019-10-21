@@ -52,6 +52,7 @@
             this.statusBar = new System.Windows.Forms.StatusStrip();
             this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.progressText = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl1.SuspendLayout();
             this.textTab.SuspendLayout();
             this.matrixTab.SuspendLayout();
@@ -286,6 +287,7 @@
             // 
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusText,
+            this.progressText,
             this.progressBar});
             this.statusBar.Location = new System.Drawing.Point(0, 360);
             this.statusBar.Name = "statusBar";
@@ -296,7 +298,7 @@
             // statusText
             // 
             this.statusText.Name = "statusText";
-            this.statusText.Size = new System.Drawing.Size(762, 17);
+            this.statusText.Size = new System.Drawing.Size(731, 17);
             this.statusText.Spring = true;
             this.statusText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -305,6 +307,12 @@
             this.progressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(100, 16);
+            // 
+            // progressText
+            // 
+            this.progressText.Name = "progressText";
+            this.progressText.Size = new System.Drawing.Size(0, 17);
+            this.progressText.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
@@ -363,6 +371,7 @@
         private System.Windows.Forms.StatusStrip statusBar;
         public System.Windows.Forms.ToolStripStatusLabel statusText;
         public System.Windows.Forms.ToolStripProgressBar progressBar;
+        private System.Windows.Forms.ToolStripStatusLabel progressText;
     }
 }
 

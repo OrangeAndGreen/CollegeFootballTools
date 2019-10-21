@@ -19,15 +19,15 @@ namespace FootballTools.Entities
             Teams = new List<Team>();
         }
 
-        public Team this[string teamName] => FindTeam(teamName);
+        //public Team this[string teamName] => FindTeam(teamName);
 
-        public Team this[int index] => Teams[index];
+        public Team this[int teamId] => FindTeam(teamId);
 
-        public Team FindTeam(string teamName)
+        public Team FindTeam(int teamId)
         {
             foreach (Team team in Teams)
             {
-                if (team.Name.Equals(teamName))
+                if (team.Id == teamId)
                 {
                     return team;
                 }
@@ -36,11 +36,11 @@ namespace FootballTools.Entities
             return null;
         }
 
-        public List<Game> AllGames
+        public GameList AllGames
         {
             get
             {
-                List<Game> games = new List<Game>();
+                GameList games = new GameList();
                 foreach (Team team in Teams)
                 {
                     foreach (Game game in team.Schedule)
@@ -52,7 +52,7 @@ namespace FootballTools.Entities
                     }
                 }
 
-                Game.SortGameList(games);
+                games.Sort();
 
                 return games;
             }

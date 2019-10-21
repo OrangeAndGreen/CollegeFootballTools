@@ -64,6 +64,9 @@
     <Compile Include="Entities\Constants.cs" />
     <Compile Include="Entities\DataMatrix.cs" />
     <Compile Include="Entities\DisplayType.cs" />
+    <Compile Include="Entities\GameList.cs" />
+    <Compile Include="Entities\Record.cs" />
+    <Compile Include="Entities\TeamResult.cs" />
     <Compile Include="Reports\ConferenceReport.cs" />
     <Compile Include="Reports\DivisionReport.cs" />
     <Compile Include="Reports\LeagueReport.cs" />
