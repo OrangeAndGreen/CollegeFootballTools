@@ -60,6 +60,7 @@
     <Compile Include="Analysis\DivisionWinnerCalculator.cs" />
     <Compile Include="Analysis\DivisionWinnerCalculatorCommand.cs" />
     <Compile Include="Analysis\GamePermutator.cs" />
+    <Compile Include="CacheHelper.cs" />
     <Compile Include="CFBData\CfbDownloader.cs" />
     <Compile Include="Entities\Constants.cs" />
     <Compile Include="Entities\DataMatrix.cs" />
@@ -104,6 +105,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ActualData\conferences.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="ActualData\teams.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -116,9 +123,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Divisions.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup />

@@ -24,20 +24,31 @@ namespace FootballTools
      *  Could turn this into a live score tracker if the source APIs update real-time
 
      * TODOs:
-     *      -Show Division Rankings with each team's overall/conference win/loss, points forced/allowed
-     *      -Show remaining conference games
-     *      -Matrix improvements
-     *      -Idea: Analyze earlier weeks in the background and cache results
+     *      -Result debugging code
+     *          -Optionally write all winner scenarios out to CSV files
+     *              File for each team
+     *              Column for each game
+     *       -Improve division tiebreakers
+     *       -Matrix improvements
+     *          -Color-code teams
+     *          -Highlight upcoming games
+     *      -Division Report
+     *          -Show Division Rankings with each team's overall/conference win/loss, points forced/allowed
+     *      -LATER:
+     *          -Idea: Analyze earlier weeks in the background and cache results
      *              Idea is to eventually have division scenarios for every season/week/division so we can graph them
      *              Only cache completed weeks
      *              Be ready to save progress if program quits while analysis is under way
      *              Then restore the saved progress and continue the analysis later
-     *      
+     *          -Idea: Could use this tool to compare teams over multiple seasons
+     *              I.e. division records over the last decade
+     *          -Allow choosing a previous week (last week played by default, i.e. use all scores)
+     *              Means possibly ignoring the results of some games
+     *              This could be a top selector next to Year, with options for 1, 2, 3, ... and All
+     *          -Team Logos
      */
     public partial class Form1 : Form
     {
-        private readonly string DivisionsFilename = "Divisions.txt";
-
         private bool mLoadedStorage = false;
         private Dictionary<string, TabPage> mTabs = new Dictionary<string, TabPage>();
 
@@ -69,7 +80,7 @@ namespace FootballTools
             divisionSelector.SelectedItem = Properties.Settings.Default.Division;
             teamSelector.SelectedItem = Properties.Settings.Default.Team;
 
-            Size = new System.Drawing.Size(Properties.Settings.Default.WindowWidth, Properties.Settings.Default.WindowHeight);
+            Size = new Size(Properties.Settings.Default.WindowWidth, Properties.Settings.Default.WindowHeight);
         }
 
         private void SaveStorage()
@@ -93,9 +104,9 @@ namespace FootballTools
         {
             UpdateStatus("Loading data", 0);
 
-            GameList games = CfbDownloader.Retrieve(int.Parse(yearTextbox.Text), forceDownload);
-            mLeague = new League(games, DivisionsFilename);
-
+            GameList games = CfbDownloader.RetrieveSeason(int.Parse(yearTextbox.Text), forceDownload);
+            mLeague = new League(games);
+            
             UpdateStatus("Finished loading", 0);
 
             //Populating the selector will trigger a UI update

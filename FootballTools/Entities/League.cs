@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace FootballTools.Entities
 {
@@ -7,90 +9,100 @@ namespace FootballTools.Entities
     {
         public List<Conference> Conferences { get; set; }
 
-        public League(GameList games, string divisionFile)
+        public League(GameList games)
         {
-            Conferences = StructureFromFile(divisionFile);
+            Conferences = LoadFromFiles();
 
             IntegrateGameInfo(games);
         }
+        
 
-        public Conference this[string conferenceName] => FindConference(conferenceName);
+        #region Loading
 
-        public Conference this[int index] => Conferences[index];
-
-        private static List<Conference> StructureFromFile(string divisionFile)
+        public static List<Conference> LoadFromFiles()
         {
-            int conferenceId = 1;
-            int divisionId = 1;
-            int teamId = 1;
+            List<Conference> ret;
 
-            List<Conference> ret = new List<Conference>();
+            int divisionIdAssigner = 1;
 
-            //Load the tex file containing division info
-            string[] lines = File.ReadAllLines(divisionFile);
-            foreach (string line in lines)
+            //Load all conferences from file
+            using (Stream stream = new FileStream("ActualData/conferences.json", FileMode.Open, FileAccess.Read))
             {
-                //Find the conference or create a new one
-                Conference foundConference = null;
-                //Conf,team,division
-                string[] parts = line.Split(',');
-                string conferenceName = parts[0].Trim();
-                foreach (Conference conference in ret)
-                {
-                    if (!conference.Name.Equals(conferenceName))
-                    {
-                        continue;
-                    }
-                    foundConference = conference;
-                    break;
-                }
-
-                if (foundConference == null)
-                {
-                    foundConference = new Conference(conferenceId, conferenceName);
-                    conferenceId++;
-                    ret.Add(foundConference);
-                }
-
-                //Find the division or create a new one
-                Division foundDivision = null;
-                string divisionName = parts[2].Trim();
-                foreach (Division division in foundConference.Divisions)
-                {
-                    if (!division.Name.Equals(divisionName))
-                    {
-                        continue;
-                    }
-                    foundDivision = division;
-                    break;
-                }
-
-                if (foundDivision == null)
-                {
-                    foundDivision = new Division(divisionId, divisionName, conferenceName);
-                    divisionId++;
-                    foundConference.Divisions.Add(foundDivision);
-                }
-
-                foundDivision.Teams.Add(new Team(teamId, parts[1].Trim(), divisionName, conferenceName));
-                teamId++;
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Conference>));
+                ret = (List<Conference>)serializer.ReadObject(stream);
             }
 
-            ret.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-            foreach(Conference conference in ret)
+            //Add a "None" conference for the leftover teams, and initialize each conference's list of divisions
+            ret.Add(new Conference(9999, "None"));
+            foreach (Conference conference in ret)
             {
-                conference.Divisions.Sort((x, y) => x.Name.CompareTo(y.Name));
-                foreach (Division division in conference.Divisions)
+                conference.Divisions = new List<Division>();
+            }
+
+            //Load all teams from file
+            List<Team> allTeams;
+            string teamsText = File.ReadAllText("ActualData/teams.json");
+            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(teamsText)))
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Team>));
+                allTeams = (List<Team>)serializer.ReadObject(stream);
+            }
+
+            //Sort the teams into their conferences
+            foreach (Team team in allTeams)
+            {
+                team.Schedule = new GameList();
+
+                string conferenceName = team.ConferenceName ?? "None";
+                string divisionName = team.DivisionName ?? "None";
+
+                //See if we already setup the division
+                Conference conference = null;
+                foreach (Conference searchConference in ret)
                 {
-                    division.Teams.Sort((x, y) => x.Name.CompareTo(y.Name));
+                    if (searchConference.Name.Equals(conferenceName))
+                    {
+                        conference = searchConference;
+                        break;
+                    }
+                }
+
+                Division division = null;
+                foreach (Division searchDivision in conference.Divisions)
+                {
+                    if (searchDivision.Name.Equals(divisionName))
+                    {
+                        division = searchDivision;
+                        break;
+                    }
+                }
+
+                //Create a new division
+                if (division == null)
+                {
+                    division = new Division(divisionIdAssigner, divisionName, conferenceName);
+                    conference.Divisions.Add(division);
+                    divisionIdAssigner++;
+                }
+
+                //Add the team to the division
+                division.Teams.Add(team);
+            }
+
+            //Filter out any conferences that don't have any teams
+            for (int i = 0; i < ret.Count; i++)
+            {
+                int index = ret.Count - 1 - i;
+                if (ret[index].Divisions.Count == 0)
+                {
+                    ret.RemoveAt(index);
                 }
             }
 
             return ret;
         }
 
-        private  void IntegrateGameInfo(GameList games)
+        private void IntegrateGameInfo(GameList games)
         {
             foreach (Game game in games)
             {
@@ -144,6 +156,15 @@ namespace FootballTools.Entities
                 }
             }
         }
+
+        #endregion
+
+
+        #region Access Helpers
+
+        public Conference this[string conferenceName] => FindConference(conferenceName);
+
+        public Conference this[int index] => Conferences[index];
 
         public Conference FindConference(string name)
         {
@@ -257,5 +278,7 @@ namespace FootballTools.Entities
                 return games;
             }
         }
+
+        #endregion
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FootballTools.Entities
 {
-    [DebuggerDisplay("({Wins}-{Losses})")]
+    [DebuggerDisplay("{Wins}-{Losses}")]
     public class Record
     {
         public int Wins { get; set; }
@@ -27,6 +27,11 @@ namespace FootballTools.Entities
         {
             Wins = wins;
             Losses = losses;
+        }
+
+        public override string ToString()
+        {
+            return $"{Wins}-{Losses}";
         }
     }
 }

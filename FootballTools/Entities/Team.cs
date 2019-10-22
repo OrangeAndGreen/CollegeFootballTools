@@ -1,15 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace FootballTools.Entities
 {
-    [DebuggerDisplay("Team: {Name}")]
+    [DebuggerDisplay("Team: {Name} ({ConferenceName})")]
+    [DataContract]
     public class Team
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string DivisionName { get; set; }
-        public string ConferenceName { get; set; }
+        [DataMember(IsRequired = false, Name = "id")]
+        public int Id;
+        [DataMember(IsRequired = false, Name = "school")]
+        public string Name;
+        [DataMember(IsRequired = false, Name = "mascot")]
+        public string Mascot;
+        [DataMember(IsRequired = false, Name = "abbreviation")]
+        public string Abbreviation;
+        [DataMember(IsRequired = false, Name = "alt_name_1")]
+        public string Name2;
+        [DataMember(IsRequired = false, Name = "alt_name_2")]
+        public string Name3;
+        [DataMember(IsRequired = false, Name = "alt_name_3")]
+        public string Name4;
+        [DataMember(IsRequired = false, Name = "conference")]
+        public string ConferenceName;
+        [DataMember(IsRequired = false, Name = "division")]
+        public string DivisionName;
+        [DataMember(IsRequired = false, Name = "color")]
+        public string Color;
+        [DataMember(IsRequired = false, Name = "alt_color")]
+        public string Colo2;
+        [DataMember(IsRequired = false, Name = "logos")]
+        public List<string> Logos;
+
         public int OverallWins { get; set; }
         public int OverallLosses { get; set; }
         public int OverallTies { get; set; }

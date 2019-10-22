@@ -68,13 +68,16 @@ namespace FootballTools.Reports
             List<Team> sortedTeams = new List<Team>(teams);
             Team.SortTeamList(sortedTeams, sortByTotalOrConferenceWins);
 
-            ret.Add("Records:");
-            foreach (Team team in sortedTeams)
+            if (sortedTeams.Count > 0)
             {
-                ret.Add($"{team.Name}: {team.ComboRecord}");
-            }
+                ret.Add("Records:");
+                foreach (Team team in sortedTeams)
+                {
+                    ret.Add($"{team.Name}: {team.ComboRecord}");
+                }
 
-            ret.Add(string.Empty);
+                ret.Add(string.Empty);
+            }
 
             ret.Add("All games:");
             List<int> teamIds = Team.GetTeamIds(sortedTeams);

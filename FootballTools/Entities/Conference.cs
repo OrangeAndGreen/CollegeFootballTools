@@ -1,13 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace FootballTools.Entities
 {
     [DebuggerDisplay("Conference: {Name}")]
+    [DataContract]
     public class Conference
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        [DataMember(IsRequired = false, Name = "id")]
+        public int Id;
+        [DataMember(IsRequired = false, Name = "name")]
+        public string Name;
+        [DataMember(IsRequired = false, Name = "short_name")]
+        public string NameShort;
+        [DataMember(IsRequired = false, Name = "abbreviation")]
+        public string Abbreviation;
+
         public List<Division> Divisions { get; set; }
 
         public Conference(int id, string name)
