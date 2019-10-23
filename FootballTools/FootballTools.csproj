@@ -60,8 +60,12 @@
     <Compile Include="Analysis\DivisionWinnerCalculator.cs" />
     <Compile Include="Analysis\DivisionWinnerCalculatorCommand.cs" />
     <Compile Include="Analysis\GamePermutator.cs" />
-    <Compile Include="CacheHelper.cs" />
-    <Compile Include="CFBData\CfbDownloader.cs" />
+    <Compile Include="Entities\ClockTime.cs" />
+    <Compile Include="Entities\Play.cs" />
+    <Compile Include="Entities\PlayList.cs" />
+    <Compile Include="Retrieval\BackgroundDownloader.cs" />
+    <Compile Include="Retrieval\CacheHelper.cs" />
+    <Compile Include="Retrieval\CfbDownloader.cs" />
     <Compile Include="Entities\Constants.cs" />
     <Compile Include="Entities\DataMatrix.cs" />
     <Compile Include="Entities\DisplayType.cs" />
@@ -77,7 +81,9 @@
     <Compile Include="Entities\Conference.cs" />
     <Compile Include="Entities\Division.cs" />
     <Compile Include="Entities\League.cs" />
-    <Compile Include="NCAA\NcaaDownloader.cs" />
+    <Compile Include="Retrieval\DownloaderJob.cs" />
+    <Compile Include="Retrieval\DownloadType.cs" />
+    <Compile Include="Retrieval\NCAA\NcaaDownloader.cs" />
     <Compile Include="Entities\Team.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -85,11 +91,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="NCAA\JSONGame.cs" />
-    <Compile Include="NCAA\JSONScoreboard.cs" />
-    <Compile Include="NCAA\JSONScoreboardEntry.cs" />
-    <Compile Include="NCAA\JSONScoreboardResponse.cs" />
-    <Compile Include="NCAA\JSONTeam.cs" />
+    <Compile Include="Retrieval\NCAA\JSONGame.cs" />
+    <Compile Include="Retrieval\NCAA\JSONScoreboard.cs" />
+    <Compile Include="Retrieval\NCAA\JSONScoreboardEntry.cs" />
+    <Compile Include="Retrieval\NCAA\JSONScoreboardResponse.cs" />
+    <Compile Include="Retrieval\NCAA\JSONTeam.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\TeamReport.cs" />
@@ -105,12 +111,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="ActualData\conferences.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ActualData\teams.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

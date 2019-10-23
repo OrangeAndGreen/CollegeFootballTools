@@ -5,28 +5,28 @@ using System.Runtime.Serialization;
 
 namespace FootballTools.Entities
 {
-    [DebuggerDisplay("Game: {home_team} vs. {away_team}   ({home_points}-{away_points})")]
+    [DebuggerDisplay("{home_team} vs. {away_team}   ({home_points}-{away_points})")]
     [DataContract]
     public class Game
     {
+        [DataMember(IsRequired = false, Name = "id")]
+        public int Id = 0;
         [DataMember(IsRequired = false)]
-        public int id = 0;
+        public int? season = 0;
         [DataMember(IsRequired = false)]
-        public int season = 0;
-        [DataMember(IsRequired = false)]
-        public int week = 0;
+        public int? week = 0;
         [DataMember(IsRequired = false)]
         public string season_type = null;
         [DataMember(IsRequired = false)]
         public string start_date;
         [DataMember(IsRequired = false)]
-        public bool neutral_site;
+        public bool? neutral_site;
         [DataMember(IsRequired = false)]
-        public bool conference_game;
+        public bool? conference_game;
         [DataMember(IsRequired = false)]
         public int? attendance;
         [DataMember(IsRequired = false)]
-        public int venue_id;
+        public int? venue_id;
         [DataMember(IsRequired = false)]
         public string venue;
         [DataMember(IsRequired = false)]
@@ -48,6 +48,8 @@ namespace FootballTools.Entities
 
         public int HomeTeamId { get; set; }
         public int AwayTeamId { get; set; }
+
+        public PlayList Plays { get; set; }
 
         public bool DivisionGame { get; set; }
 

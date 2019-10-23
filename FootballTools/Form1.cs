@@ -1,11 +1,11 @@
 ﻿using FootballTools.Analysis;
-using FootballTools.CFBData;
 using FootballTools.Entities;
 using FootballTools.Reports;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using FootballTools.Retrieval;
 
 namespace FootballTools
 {
@@ -24,6 +24,12 @@ namespace FootballTools
      *  Could turn this into a live score tracker if the source APIs update real-time
 
      * TODOs:
+     *      -Planning more downloads
+     *          Next up is downloading all the plays for every game
+     *          This start to get big, lots of calls with lots of data
+     *          Create a background downloader
+     *              Attempts to download and cache all games and plays for games
+     *
      *      -Result debugging code
      *          -Optionally write all winner scenarios out to CSV files
      *              File for each team
@@ -65,6 +71,8 @@ namespace FootballTools
         {
             InitializeComponent();
 
+            BackgroundDownloader.Start();
+
             mSelectedMatrixRows = new List<int>();
             mSelectedMatrixCellRows = new List<int>();
             mSelectedMatrixCellColumns = new List<int>();
@@ -104,8 +112,15 @@ namespace FootballTools
         {
             UpdateStatus("Loading data", 0);
 
-            GameList games = CfbDownloader.RetrieveSeason(int.Parse(yearTextbox.Text), forceDownload);
-            mLeague = new League(games);
+            List<Conference> conferences = CfbDownloader.RetrieveConferences();
+            List<Team> teams = CfbDownloader.RetrieveTeams();
+
+            int year = int.Parse(yearTextbox.Text);
+            GameList games = CfbDownloader.RetrieveSeasonGameList(year, forceDownload);
+            mLeague = new League(conferences, teams, games);
+
+            PlayList plays = CfbDownloader.RetrieveSeasonPlayList(year, forceDownload);
+            mLeague.IntegratPlays(plays);
             
             UpdateStatus("Finished loading", 0);
 
@@ -389,7 +404,7 @@ namespace FootballTools
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //mJudge.Quit();
+            BackgroundDownloader.Shutdown();
         }
 
         private void matrixGrid_SelectionChanged(object sender, EventArgs e)

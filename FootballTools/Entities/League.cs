@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -9,28 +10,21 @@ namespace FootballTools.Entities
     {
         public List<Conference> Conferences { get; set; }
 
-        public League(GameList games)
+        public League(List<Conference> conferences, List<Team> teams, GameList games)
         {
-            Conferences = LoadFromFiles();
+            Conferences = Load(conferences, teams);
 
-            IntegrateGameInfo(games);
+            IntegrateGames(games);
         }
         
 
         #region Loading
 
-        public static List<Conference> LoadFromFiles()
+        public static List<Conference> Load(List<Conference> conferences, List<Team> teams)
         {
-            List<Conference> ret;
+            List<Conference> ret = conferences;
 
             int divisionIdAssigner = 1;
-
-            //Load all conferences from file
-            using (Stream stream = new FileStream("ActualData/conferences.json", FileMode.Open, FileAccess.Read))
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Conference>));
-                ret = (List<Conference>)serializer.ReadObject(stream);
-            }
 
             //Add a "None" conference for the leftover teams, and initialize each conference's list of divisions
             ret.Add(new Conference(9999, "None"));
@@ -39,17 +33,8 @@ namespace FootballTools.Entities
                 conference.Divisions = new List<Division>();
             }
 
-            //Load all teams from file
-            List<Team> allTeams;
-            string teamsText = File.ReadAllText("ActualData/teams.json");
-            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(teamsText)))
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<Team>));
-                allTeams = (List<Team>)serializer.ReadObject(stream);
-            }
-
             //Sort the teams into their conferences
-            foreach (Team team in allTeams)
+            foreach (Team team in teams)
             {
                 team.Schedule = new GameList();
 
@@ -102,7 +87,7 @@ namespace FootballTools.Entities
             return ret;
         }
 
-        private void IntegrateGameInfo(GameList games)
+        public void IntegrateGames(GameList games)
         {
             foreach (Game game in games)
             {
@@ -113,9 +98,17 @@ namespace FootballTools.Entities
                 {
                     game.HomeTeamId = homeTeam.Id;
                 }
+                else
+                {
+                    Console.WriteLine("Check");
+                }
                 if (awayTeam != null)
                 {
                     game.AwayTeamId = awayTeam.Id;
+                }
+                else
+                {
+                    Console.WriteLine("Check");
                 }
 
                 game.DivisionGame = homeTeam?.DivisionName != null && awayTeam?.DivisionName != null && homeTeam.DivisionName.Equals(awayTeam.DivisionName);
@@ -154,6 +147,23 @@ namespace FootballTools.Entities
                         team.Schedule.Sort();
                     }
                 }
+            }
+        }
+
+        public void IntegratPlays(PlayList plays)
+        {
+            foreach (Play play in plays)
+            {
+                Team homeTeam = FindTeam(play.Home);
+                Team awayTeam = FindTeam(play.Away);
+                Game game = homeTeam.Schedule.FindMatchup(homeTeam.Id, awayTeam.Id);
+
+                if (game.Plays == null)
+                {
+                    game.Plays = new PlayList();
+                }
+
+                game.Plays.Add(play);
             }
         }
 

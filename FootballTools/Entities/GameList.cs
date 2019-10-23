@@ -7,7 +7,7 @@ using System.Text;
 
 namespace FootballTools.Entities
 {
-    [DebuggerDisplay("GameList: {mGames.Count} games")]
+    [DebuggerDisplay("{mGames.Count} games")]
     public class GameList : IEnumerable<Game>
     {
         private List<Game> mGames { get; set; }
@@ -138,7 +138,7 @@ namespace FootballTools.Entities
             mGames.Sort(
                     delegate (Game g1, Game g2)
                     {
-                        int compareDate = g1.week.CompareTo(g2.week);
+                        int compareDate = g1.week.HasValue && g2.week.HasValue ? g1.week.Value.CompareTo(g2.week.Value) : 0;
                         if (compareDate == 0)
                         {
                             return g1.GameDate.CompareTo(g2.GameDate);

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace FootballTools
+namespace FootballTools.Retrieval
 {
     public static class CacheHelper
     {
@@ -20,13 +20,13 @@ namespace FootballTools
                     return default(T);
                 }
 
-                string filepath = Path.Combine(CacheDirectory, objectIdentifier);
+                string filepath = Path.Combine(CacheDirectory, objectIdentifier + ".json");
                 if (!File.Exists(filepath))
                 {
                     return default(T);
                 }
 
-                using (Stream stream = new FileStream(filepath, FileMode.Open))
+                using (Stream stream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
                     return (T)serializer.ReadObject(stream);
@@ -39,6 +39,30 @@ namespace FootballTools
             }
         }
 
+        public static bool IsItemInCache(string objectIdentifier)
+        {
+            try
+            {
+                if (!Directory.Exists(CacheDirectory))
+                {
+                    return false;
+                }
+
+                string filepath = Path.Combine(CacheDirectory, objectIdentifier + ".json");
+                if (!File.Exists(filepath))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception while checking cache for file {objectIdentifier}: {e.Message}");
+                return false;
+            }
+        }
+
         public static void Cache<T>(string objectIdentifier, T itemToCache)
         {
             try
@@ -48,7 +72,7 @@ namespace FootballTools
                     Directory.CreateDirectory(CacheDirectory);
                 }
 
-                string filepath = Path.Combine(CacheDirectory, objectIdentifier);
+                string filepath = Path.Combine(CacheDirectory, objectIdentifier + ".json");
                 if (File.Exists(filepath))
                 {
                     File.Delete(filepath);
