@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using FootballTools.Entities;
 
@@ -19,29 +20,165 @@ namespace FootballTools.Analysis.DivisionTiebreakers
 		  7) The representative shall be chosen by a draw as administered by the Commissioner or Commissioner's designee.
          */
 
+        //public int OldBreakTie(GameList games, List<int> winners, List<TeamResult> teamResults, List<int> teamIds, Division division)
+        //{
+        //    //1) See if any team wins the combined head-to-head matchups
+        //    List<int> tieWinners = games.GetWinnersFromTeams(teamIds, false, winners);
+
+        //    if(tieWinners.Count == 1)
+        //    {
+        //        return tieWinners[0];
+        //    }
+
+        //    //2) See if any team win has the best record within the division
+
+        //    //Build the list of team names for the division
+        //    //List<int> divisionTeamIds = Team.GetTeamIds(division.Teams);
+
+        //    tieWinners = TeamResult.GetWinningTeamIds(teamResults, RecordType.Division, winners);// games.GetWinnersFromTeams(divisionTeamIds, false, winners);
+
+        //    if (tieWinners.Count == 1)
+        //    {
+        //        return tieWinners[0];
+        //    }
+
+        //    return -1;
+        //}
+
         public int BreakTie(GameList games, List<int> winners, List<TeamResult> teamResults, List<int> teamIds, Division division)
         {
-            //1) See if any team wins the combined head-to-head matchups
-            List<int> tieWinners = games.GetWinnersFromTeams(teamIds, false, winners);
+            List<int> finalists = new List<int>(teamIds);
 
-            if(tieWinners.Count == 1)
+            while (true)
             {
-                return tieWinners[0];
+                int startCount = finalists.Count;
+                switch (startCount)
+                {
+                    case 1:
+                        return finalists[0];
+                    case 2:
+                    {
+                        return BreakTwoWayTie(games, winners, finalists[0], finalists[1]);
+                    }
+                    default:
+                        finalists = BreakLargeTie(games, winners, finalists, division);
+                        break;
+                }
+
+                if (finalists.Count == startCount)
+                {
+                    //Can't break the tie
+                    return -1;
+                }
+            }
+        }
+
+        public int BreakTwoWayTie(GameList games, List<int> winners, int team1, int team2)
+        {
+            int index = games.FindMatchupIndex(team1, team2);
+            return winners[index];
+        }
+
+        public List<int> BreakLargeTie(GameList games, List<int> winners, List<int> finalists, Division division)
+        {
+            List<int> newFinalists = new List<int>(finalists);
+
+            //Build some records for the finalists
+            Dictionary<int, Record> headToHeadRecords = new Dictionary<int, Record>();
+            int mostHeadToHeadWins = 0;
+            Dictionary<int, Record> divisionRecords = new Dictionary<int, Record>();
+            int mostDivisionWins = 0;
+            foreach (int finalistId in newFinalists)
+            {
+                headToHeadRecords[finalistId] = new Record(0, 0);
+                divisionRecords[finalistId] = new Record(0, 0);
             }
 
-            //2) See if any team win has the best record within the division
-
-            //Build the list of team names for the division
-            //List<int> divisionTeamIds = Team.GetTeamIds(division.Teams);
-
-            tieWinners = TeamResult.GetWinningTeamIds(teamResults, RecordType.Division, winners);// games.GetWinnersFromTeams(divisionTeamIds, false, winners);
-
-            if (tieWinners.Count == 1)
+            for (int i = 0; i < games.Count; i++)
             {
-                return tieWinners[0];
+                Game game = games[i];
+                int winnerId = winners[i];
+                foreach (int finalistId in newFinalists)
+                {
+                    if (game.InvolvesTeam(finalistId))
+                    {
+                        int otherTeamId = game.HomeTeamId == finalistId ? game.AwayTeamId : game.HomeTeamId;
+                        if (newFinalists.Contains(otherTeamId))
+                        {
+                            if (winnerId == finalistId)
+                            {
+                                headToHeadRecords[finalistId].Wins++;
+                                mostHeadToHeadWins = Math.Max(mostHeadToHeadWins, headToHeadRecords[finalistId].Wins);
+                            }
+                            else
+                            {
+                                headToHeadRecords[finalistId].Losses++;
+                            }
+                        }
+
+                        if (game.DivisionGame)
+                        {
+                            if (winnerId == finalistId)
+                            {
+                                divisionRecords[finalistId].Wins++;
+                                mostDivisionWins = Math.Max(mostDivisionWins, divisionRecords[finalistId].Wins);
+                            }
+                            else
+                            {
+                                divisionRecords[finalistId].Losses++;
+                            }
+                        }
+                    }
+                }
             }
 
-            return -1;
+            //Now see if we can rule out any teams based on records
+            bool excludedFinalist = false;
+            for (int i = newFinalists.Count - 1; i >= 0; i--)
+            {
+                if (headToHeadRecords[newFinalists[i]].Wins < mostHeadToHeadWins)
+                {
+                    newFinalists.RemoveAt(i);
+                    excludedFinalist = true;
+                }
+            }
+
+            if (!excludedFinalist)
+            {
+                for (int i = newFinalists.Count - 1; i >= 0; i--)
+                {
+                    if (divisionRecords[newFinalists[i]].Wins < mostDivisionWins)
+                    {
+                        newFinalists.RemoveAt(i);
+                        excludedFinalist = true;
+                    }
+                }
+            }
+
+            if (!excludedFinalist)
+            {
+                if (true)//newFinalists.Contains(2390))
+                {
+                    Console.WriteLine("Couldn't break tie:");
+                    Console.WriteLine("Head to head records:");
+                    foreach (int teamId in newFinalists)
+                    {
+                        Team team = division.FindTeam(teamId);
+                        Console.WriteLine($"   {team.Name}: {headToHeadRecords[teamId]}");
+                    }
+
+                    Console.WriteLine("Division records:");
+                    foreach (int teamId in newFinalists)
+                    {
+                        Team team = division.FindTeam(teamId);
+                        Console.WriteLine($"   {team.Name}: {divisionRecords[teamId]}");
+                    }
+
+                    Console.WriteLine();
+                }
+            }
+
+            return newFinalists;
         }
     }
 }

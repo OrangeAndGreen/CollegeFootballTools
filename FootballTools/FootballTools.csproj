@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analysis\DivisionResult.cs" />
     <Compile Include="Analysis\DivisionTiebreakers\AccTiebreaker.cs" />
     <Compile Include="Analysis\DivisionTiebreakers\Big10Tiebreaker.cs" />
     <Compile Include="Analysis\DivisionTiebreakers\Big12Tiebreaker.cs" />

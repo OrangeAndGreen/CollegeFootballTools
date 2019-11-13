@@ -119,8 +119,8 @@ namespace FootballTools
             GameList games = CfbDownloader.RetrieveSeasonGameList(year, forceDownload);
             mLeague = new League(conferences, teams, games);
 
-            PlayList plays = CfbDownloader.RetrieveSeasonPlayList(year, forceDownload);
-            mLeague.IntegratPlays(plays);
+            //PlayList plays = CfbDownloader.RetrieveSeasonPlayList(year, forceDownload);
+            //mLeague.IntegratPlays(plays);
             
             UpdateStatus("Finished loading", 0);
 
@@ -230,7 +230,7 @@ namespace FootballTools
                 EnableDisableAnalyzeButton(false);
 
                 //Start an async job to calculate the division scenarios
-                DivisionScenarioAnalyzer analyzer = DivisionScenarioAnalyzer.Analyze(mLeague, SelectedConference, SelectedDivision,
+                DivisionScenarioAnalyzer analyzer = DivisionScenarioAnalyzer.Analyze(mLeague, SelectedConference, SelectedDivision, SelectedTeam, true,
                     (judgmentsDone, totalJudgments, elapsed) =>
                     {
                         mUpdateCounter++;

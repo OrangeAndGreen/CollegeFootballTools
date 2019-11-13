@@ -155,6 +155,20 @@ namespace FootballTools.Entities
             return index >= 0 ? mGames[index] : null;
         }
 
+        public Game FindMatchup(int gameId)
+        {
+            for (int i = 0; i < mGames.Count; i++)
+            {
+                Game game = mGames[i];
+                if (game.Id == gameId)
+                {
+                    return game;
+                }
+            }
+
+            return null;
+        }
+
         public int FindMatchupIndex(int team1, int team2)
         {
             for (int i = 0; i < mGames.Count; i++)

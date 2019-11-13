@@ -13,7 +13,7 @@ namespace FootballTools.Retrieval
     /// </summary>
     public class BackgroundDownloader
     {
-        private static readonly int EarliestYear = 1950;
+        private static readonly int EarliestYear = 2018;
         private static readonly int ThrottleDelayMs = 1000;
 
         private Thread mThread;

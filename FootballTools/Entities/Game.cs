@@ -76,6 +76,8 @@ namespace FootballTools.Entities
             }
         }
 
+        public string MatchupString => $"{home_team} vs. {away_team}";
+
         public bool ConferenceGame => (home_conference?.Equals(away_conference ?? string.Empty)) ?? false;
         public bool GameAlreadyPlayed => home_points.HasValue && away_points.HasValue;
 
